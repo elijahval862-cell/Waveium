@@ -1,0 +1,10 @@
+__pycache__/
+*.py[cod]
+*$py.class
+*.exe
+*.log
+.vscode/
+graph_canvas_backup.txt
+main_window_full.txt
+.DS_Store
+Thumbs.db

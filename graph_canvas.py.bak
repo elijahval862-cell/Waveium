@@ -1,0 +1,1278 @@
+from PySide6.QtCore import Qt, QTimer, Signal, QPointF
+from PySide6.QtGui import QBrush, QColor, QFont, QPainter, QPen, QRadialGradient
+from PySide6.QtWidgets import QWidget
+import math
+
+
+class WaveiumGraphCanvas(QWidget):
+    """
+    Waveium central network topology canvas.
+
+    Important:
+    - All discovered graph nodes are always drawn.
+    - "Hide Names" hides ONLY device/router information cards.
+    - Router, device icons, links, signal zones and animation remain visible.
+    """
+
+    device_selected = Signal(object)
+
+    def __init__(self, graph=None, parent=None):
+        super().__init__(parent)
+
+        self.graph = graph
+        self.show_details = True
+        self.hovered_node = None
+        self.selected_node = None
+        self.animation_offset = 0
+        self.node_positions = {}
+        self.edge_values = {}
+
+        self.setMinimumSize(650, 600)
+        self.setMouseTracking(True)
+
+        self.animation_timer = QTimer(self)
+        self.animation_timer.timeout.connect(self.animate)
+        self.animation_timer.start(45)
+
+        self.rebuild_positions()
+
+    # ----------------------------------------------------------
+    # GRAPH API
+    # ----------------------------------------------------------
+
+    def set_graph(self, graph):
+        self.graph = graph
+        self.selected_node = None
+        self.hovered_node = None
+        self.rebuild_positions()
+        self.update()
+
+    def set_edge_signal(self, source, target, rssi):
+        self.edge_values[(source, target)] = rssi
+        self.edge_values[(target, source)] = rssi
+        self.update()
+
+    def set_edge_range(self, source, target, distance):
+        self.update()
+
+    def toggle_details(self):
+        """Hide/show ONLY topology labels/cards."""
+        self.show_details = not self.show_details
+        self.update()
+
+    # ----------------------------------------------------------
+    # HELPERS
+    # ----------------------------------------------------------
+
+    def animate(self):
+        self.animation_offset = (self.animation_offset + 3) % 600
+        self.update()
+
+    def get_router(self):
+        if self.graph is None:
+            return None
+
+        for node, data in self.graph.nodes(data=True):
+            role = str(data.get("role", "")).lower()
+            vertex_type = str(data.get("vertex_type", "")).lower()
+            label = str(data.get("label", "")).lower()
+
+            if role == "router" or vertex_type == "router":
+                return node
+
+            if "main router" in label or "gateway" in label:
+                return node
+
+        return None
+
+    def get_local_device(self):
+        if self.graph is None:
+            return None
+
+        for node, data in self.graph.nodes(data=True):
+            label = str(data.get("label", "")).upper()
+            if label in ("YOUR DEVICE", "THIS DEVICE", "LOCAL DEVICE"):
+                return node
+
+            if str(data.get("role", "")).lower() == "local_device":
+                return node
+
+        return None
+
+    def _safe_nodes(self):
+        if self.graph is None:
+            return []
+        return list(self.graph.nodes(data=True))
+
+    # ----------------------------------------------------------
+    # POSITIONS
+    # ----------------------------------------------------------
+
+    def rebuild_positions(self):
+        """
+        Premium balanced topology layout.
+
+        The router remains visually central, the local computer stays
+        at the top, and the remaining devices are distributed with
+        extra breathing room so cards do not touch the device circles.
+        """
+
+        nodes = self._safe_nodes()
+
+        if not nodes:
+            self.node_positions = {}
+            return
+
+        width = max(self.width(), 650)
+        height = max(self.height(), 600)
+
+        # Move the topology slightly upward to leave room at the bottom.
+        cx = width * 0.50
+        cy = height * 0.47
+
+        router = self.get_router()
+        local = self.get_local_device()
+
+        positions = {}
+
+        if router is not None:
+            positions[router] = QPointF(cx, cy)
+
+        others = [
+            node
+            for node, _ in nodes
+            if node != router
+        ]
+
+        # Local device: clearly separated above the router.
+        if local is not None and local in others:
+            local_radius = min(width, height) * 0.255
+            local_radius = max(
+                165,
+                min(local_radius, 195)
+            )
+
+            positions[local] = QPointF(
+                cx,
+                cy - local_radius
+            )
+
+            others.remove(local)
+
+        count = len(others)
+
+        if count:
+            radius = min(
+                218 + max(0, count - 4) * 7,
+                min(width, height) * 0.33
+            )
+
+            radius = max(
+                radius,
+                195
+            )
+
+            # Full, balanced ring around the router.
+            # Start at 0 degrees so left/right devices stay symmetric.
+            step = (
+                360.0 / count
+                if count > 1
+                else 0
+            )
+
+            start_angle = -90.0
+
+            for index, node in enumerate(others):
+                angle = math.radians(
+                    start_angle + index * step
+                )
+
+                x = cx + radius * math.cos(angle)
+                y = cy + radius * math.sin(angle)
+
+                x = max(
+                    72,
+                    min(
+                        width - 72,
+                        x
+                    )
+                )
+
+                y = max(
+                    82,
+                    min(
+                        height - 82,
+                        y
+                    )
+                )
+
+                positions[node] = QPointF(
+                    x,
+                    y
+                )
+
+        self.node_positions = positions
+
+    def resizeEvent(self, event):
+        super().resizeEvent(event)
+        self.rebuild_positions()
+
+    # ----------------------------------------------------------
+    # PAINT
+    # ----------------------------------------------------------
+
+    def paintEvent(self, event):
+        painter = QPainter(self)
+        painter.setRenderHint(QPainter.Antialiasing)
+
+        self.draw_background(painter)
+
+        router = self.get_router()
+        if router in self.node_positions:
+            self.draw_signal_zones(
+                painter,
+                self.node_positions[router]
+            )
+
+        self.draw_edges(painter)
+        self.draw_particles(painter)
+        self.draw_nodes(painter)
+
+        painter.end()
+
+    def draw_background(self, painter):
+
+        center = QPointF(
+            self.width() * 0.50,
+            self.height() * 0.48
+        )
+
+        gradient = QRadialGradient(
+            center,
+            max(self.width(), self.height()) * 0.85
+        )
+
+        gradient.setColorAt(0.0, QColor("#899895"))
+        gradient.setColorAt(0.48, QColor("#778683"))
+        gradient.setColorAt(1.0, QColor("#657673"))
+
+        painter.fillRect(
+            self.rect(),
+            QBrush(gradient)
+        )
+
+        painter.setPen(Qt.NoPen)
+        painter.setBrush(QColor(89, 227, 173, 22))
+
+        for x in range(16, self.width(), 34):
+            for y in range(16, self.height(), 34):
+                painter.drawEllipse(
+                    QPointF(x, y),
+                    1.1,
+                    1.1
+                )
+
+    def draw_signal_zones(self, painter, center):
+
+        zones = [
+            (62, "#59E3AD", 34),
+            (126, "#83DCC5", 30),
+            (192, "#D9D88C", 28),
+            (258, "#E5B98B", 25),
+            (324, "#D88F99", 22),
+        ]
+
+        for radius, color, alpha in zones:
+            base = QColor(color)
+            painter.setPen(
+                QPen(
+                    QColor(
+                        base.red(),
+                        base.green(),
+                        base.blue(),
+                        alpha + 35
+                    ),
+                    1.5,
+                    Qt.DashLine
+                )
+            )
+            painter.setBrush(
+                QColor(
+                    base.red(),
+                    base.green(),
+                    base.blue(),
+                    alpha
+                )
+            )
+            painter.drawEllipse(
+                center,
+                radius,
+                radius
+            )
+
+        painter.setPen(Qt.NoPen)
+        painter.setBrush(QColor(89, 227, 173, 60))
+        painter.drawEllipse(center, 82, 82)
+
+    def get_edge_rssi(self, source, target):
+        value = self.edge_values.get((source, target))
+        if value is None:
+            value = self.edge_values.get((target, source))
+
+        if value is not None:
+            try:
+                return float(value)
+            except (TypeError, ValueError):
+                return None
+
+        if self.graph is not None:
+            try:
+                value = self.graph[source][target].get("rssi")
+                if value is not None:
+                    return float(value)
+            except Exception:
+                pass
+
+        return None
+
+    def signal_color(self, rssi):
+        if rssi is None:
+            return QColor("#D3A4B7")
+        if rssi >= -50:
+            return QColor("#19B978")
+        if rssi >= -60:
+            return QColor("#248EF0")
+        if rssi >= -70:
+            return QColor("#E8A51B")
+        if rssi >= -80:
+            return QColor("#EF7C39")
+        return QColor("#DF5555")
+
+    def draw_edges(self, painter):
+
+        if self.graph is None:
+            return
+
+        for source, target in self.graph.edges():
+
+            p1 = self.node_positions.get(source)
+            p2 = self.node_positions.get(target)
+
+            if p1 is None or p2 is None:
+                continue
+
+            rssi = self.get_edge_rssi(source, target)
+
+            selected_path = (
+                self.selected_node is not None
+                and (
+                    source == self.selected_node
+                    or target == self.selected_node
+                )
+            )
+
+            if selected_path:
+                color = QColor("#59E3AD")
+                width = 4.0
+                glow_alpha = 65
+
+            elif self.selected_node is not None:
+                color = QColor(181, 225, 211, 75)
+                width = 1.7
+                glow_alpha = 18
+
+            else:
+                if rssi is None:
+                    color = QColor("#A7CFC2")
+                elif rssi >= -60:
+                    color = QColor("#59E3AD")
+                elif rssi >= -70:
+                    color = QColor("#D6D47C")
+                elif rssi >= -80:
+                    color = QColor("#E7A47D")
+                else:
+                    color = QColor("#D98791")
+
+                width = 2.3
+                glow_alpha = 28
+
+            glow = QColor(
+                color.red(),
+                color.green(),
+                color.blue(),
+                glow_alpha
+            )
+
+            painter.setPen(QPen(glow, width + 6))
+            painter.drawLine(p1, p2)
+
+            painter.setPen(QPen(color, width))
+            painter.drawLine(p1, p2)
+
+            for fraction in (0.35, 0.65):
+                x = p1.x() + (p2.x() - p1.x()) * fraction
+                y = p1.y() + (p2.y() - p1.y()) * fraction
+
+                painter.setPen(Qt.NoPen)
+                painter.setBrush(
+                    QColor(
+                        color.red(),
+                        color.green(),
+                        color.blue(),
+                        170
+                    )
+                )
+                painter.drawEllipse(
+                    QPointF(x, y),
+                    2.5,
+                    2.5
+                )
+
+    def draw_particles(self, painter):
+
+        if self.graph is None:
+            return
+
+        router = self.get_router()
+
+        for index, (source, target) in enumerate(self.graph.edges()):
+
+            p1 = self.node_positions.get(source)
+            p2 = self.node_positions.get(target)
+
+            if p1 is None or p2 is None:
+                continue
+
+            if router in (source, target):
+                phase = (
+                    (self.animation_offset + index * 95) % 500
+                ) / 500
+                color = QColor("#DFFFEA")
+                radius = 3.5
+            else:
+                phase = (
+                    (self.animation_offset + index * 140) % 500
+                ) / 500
+                color = QColor(205, 245, 225, 150)
+                radius = 2.5
+
+            x = p1.x() + (p2.x() - p1.x()) * phase
+            y = p1.y() + (p2.y() - p1.y()) * phase
+
+            painter.setPen(Qt.NoPen)
+            painter.setBrush(color)
+            painter.drawEllipse(
+                QPointF(x, y),
+                radius,
+                radius
+            )
+
+    def draw_nodes(self, painter):
+        if self.graph is None:
+            return
+
+        router = self.get_router()
+        local = self.get_local_device()
+
+        for node, data in self.graph.nodes(data=True):
+            pos = self.node_positions.get(node)
+            if pos is None:
+                continue
+
+            if node == router:
+                self.draw_router(painter, node, data, pos)
+            else:
+                self.draw_device(
+                    painter,
+                    node,
+                    data,
+                    pos,
+                    node == local
+                )
+
+    def draw_router(self, painter, node, data, pos):
+
+        selected = self.selected_node == node
+        hovered = self.hovered_node == node
+
+        painter.setPen(Qt.NoPen)
+        painter.setBrush(QColor(89, 227, 173, 78))
+        painter.drawEllipse(pos, 66, 66)
+
+        painter.setBrush(QColor(255, 253, 241, 28))
+        painter.drawEllipse(pos, 55, 55)
+
+        border = (
+            QColor("#59E3AD")
+            if selected
+            else QColor("#8BECC5")
+        )
+
+        painter.setBrush(QColor("#FFFDF8"))
+        painter.setPen(
+            QPen(
+                border,
+                3.8 if selected else 3.0
+            )
+        )
+        painter.drawEllipse(pos, 43, 43)
+
+        self.draw_router_icon(painter, pos)
+
+        if hovered:
+            painter.setPen(QPen(QColor("#DDFCEB"), 2))
+            painter.setBrush(Qt.NoBrush)
+            painter.drawEllipse(pos, 50, 50)
+
+        if self.show_details:
+            self.draw_router_card(painter, data, pos)
+
+    def draw_router_icon(self, painter, pos):
+
+        c = QColor("#087B55")
+
+        painter.setPen(QPen(c, 2.1))
+        painter.setBrush(Qt.NoBrush)
+
+        painter.drawRoundedRect(
+            int(pos.x() - 17),
+            int(pos.y() - 5),
+            34,
+            17,
+            4,
+            4
+        )
+
+        painter.drawLine(
+            int(pos.x() - 9),
+            int(pos.y() - 7),
+            int(pos.x() - 12),
+            int(pos.y() - 16)
+        )
+
+        painter.drawLine(
+            int(pos.x() + 9),
+            int(pos.y() - 7),
+            int(pos.x() + 12),
+            int(pos.y() - 16)
+        )
+
+        painter.setBrush(c)
+
+        for dx in (-9, 0, 9):
+            painter.drawEllipse(
+                int(pos.x() + dx - 2),
+                int(pos.y() + 1),
+                4,
+                4
+            )
+
+    def draw_device(self, painter, node, data, pos, is_local):
+
+        selected = self.selected_node == node
+        hovered = self.hovered_node == node
+
+        rssi = data.get("rssi")
+
+        if selected:
+            outline = QColor("#59E3AD")
+        elif is_local:
+            outline = QColor("#7ADCCB")
+        else:
+            outline = QColor("#D7B8C6")
+
+        painter.setPen(Qt.NoPen)
+        painter.setBrush(
+            QColor(
+                outline.red(),
+                outline.green(),
+                outline.blue(),
+                25
+            )
+        )
+        painter.drawEllipse(pos, 48, 48)
+
+        painter.setBrush(QColor("#FFFDF8"))
+        painter.setPen(
+            QPen(
+                outline,
+                3.0 if not selected else 4.0
+            )
+        )
+        painter.drawEllipse(pos, 34, 34)
+
+        self.draw_device_icon(
+            painter,
+            pos,
+            data,
+            is_local
+        )
+
+        status = self.signal_color(rssi)
+
+        painter.setPen(Qt.NoPen)
+        painter.setBrush(
+            QColor(
+                status.red(),
+                status.green(),
+                status.blue(),
+                240
+            )
+        )
+        painter.drawEllipse(
+            QPointF(
+                pos.x() + 23,
+                pos.y() - 23
+            ),
+            4.5,
+            4.5
+        )
+
+        if is_local:
+            painter.setBrush(QColor("#59E3AD"))
+            painter.drawEllipse(
+                QPointF(
+                    pos.x() + 23,
+                    pos.y() - 24
+                ),
+                5,
+                5
+            )
+
+        if hovered:
+            painter.setPen(QPen(QColor("#DDFCEB"), 2))
+            painter.setBrush(Qt.NoBrush)
+            painter.drawEllipse(pos, 41, 41)
+
+        if self.show_details:
+            self.draw_device_card(
+                painter,
+                node,
+                data,
+                pos,
+                is_local
+            )
+
+    def draw_device_icon(self, painter, pos, data, is_local):
+        """
+        Draw a device-specific icon.
+
+        Waveium's scanner may not always know the exact hardware type,
+        so the icon is selected from every useful text field available.
+        The local machine defaults to a laptop/PC icon.
+        """
+        text = " ".join(
+            str(data.get(key, ""))
+            for key in (
+                "label",
+                "hostname",
+                "name",
+                "device_type",
+                "type",
+                "vendor",
+                "manufacturer",
+                "description",
+                "model",
+            )
+        ).lower()
+
+        # --------------------------------------------------
+        # 1. Use explicit device information when available.
+        # --------------------------------------------------
+        if any(word in text for word in (
+            "phone", "mobile", "android", "iphone", "ipad",
+            "tablet", "galaxy", "pixel", "oneplus", "redmi"
+        )):
+            self.draw_phone_icon(painter, pos)
+            return
+
+        if any(word in text for word in (
+            "tv", "television", "smarttv", "chromecast",
+            "roku", "firetv", "bravia"
+        )):
+            self.draw_tv_icon(painter, pos)
+            return
+
+        if any(word in text for word in (
+            "printer", "print", "laserjet", "deskjet"
+        )):
+            self.draw_printer_icon(painter, pos)
+            return
+
+        if any(word in text for word in (
+            "camera", "cam", "cctv", "hikvision", "reolink"
+        )):
+            self.draw_camera_icon(painter, pos)
+            return
+
+        if any(word in text for word in (
+            "speaker", "audio", "alexa", "echo", "sonos"
+        )):
+            self.draw_speaker_icon(painter, pos)
+            return
+
+        if any(word in text for word in (
+            "desktop", "pc", "computer", "workstation"
+        )):
+            self.draw_desktop_icon(painter, pos)
+            return
+
+        # --------------------------------------------------
+        # 2. Do NOT perform reverse-DNS here.
+        #
+        # Painting runs on the Qt GUI thread. A hostname lookup
+        # can wait on the network and make the whole application
+        # appear frozen. Device identification therefore uses
+        # only metadata already supplied by the scanner.
+        # --------------------------------------------------
+
+        # --------------------------------------------------
+        # 3. MAC-vendor hints. These are intentionally limited:
+        #    a vendor alone cannot prove the exact hardware type.
+        #    They are used only when no better identification exists.
+        # --------------------------------------------------
+        mac = str(data.get("mac", "")).replace("-", ":").lower()
+        prefix = ":".join(mac.split(":")[:3])
+
+        phone_prefixes = {
+            "ac:37:43", "3c:5a:b4", "a4:83:e7",
+            "b4:f1:da", "f0:18:98", "d8:bb:2c",
+            "10:2a:b3", "78:02:f8"
+        }
+
+        tv_prefixes = {
+            "00:1c:62", "7c:01:91", "b8:27:eb"
+        }
+
+        if prefix in phone_prefixes:
+            self.draw_phone_icon(painter, pos)
+            return
+
+        if prefix in tv_prefixes:
+            self.draw_tv_icon(painter, pos)
+            return
+
+        # Safe fallback.
+        self.draw_laptop_icon(painter, pos)
+
+    def draw_printer_icon(self, painter, pos):
+        c = QColor("#159B72")
+        painter.setPen(QPen(c, 2.0))
+        painter.setBrush(Qt.NoBrush)
+
+        painter.drawRoundedRect(
+            int(pos.x() - 15), int(pos.y() - 3),
+            30, 17, 3, 3
+        )
+        painter.drawRect(
+            int(pos.x() - 11), int(pos.y() - 15),
+            22, 12
+        )
+        painter.drawLine(
+            int(pos.x() - 8), int(pos.y() + 14),
+            int(pos.x() + 8), int(pos.y() + 14)
+        )
+
+    def draw_camera_icon(self, painter, pos):
+        c = QColor("#159B72")
+        painter.setPen(QPen(c, 2.0))
+        painter.setBrush(Qt.NoBrush)
+
+        painter.drawRoundedRect(
+            int(pos.x() - 17), int(pos.y() - 9),
+            34, 20, 4, 4
+        )
+        painter.drawRect(
+            int(pos.x() - 8), int(pos.y() - 14),
+            11, 5
+        )
+        painter.drawEllipse(
+            QPointF(pos.x(), pos.y() + 1), 6, 6
+        )
+
+    def draw_speaker_icon(self, painter, pos):
+        c = QColor("#159B72")
+        painter.setPen(QPen(c, 2.0))
+        painter.setBrush(Qt.NoBrush)
+
+        painter.drawRoundedRect(
+            int(pos.x() - 11), int(pos.y() - 17),
+            22, 34, 5, 5
+        )
+        painter.drawEllipse(
+            QPointF(pos.x(), pos.y() - 5), 5, 5
+        )
+        painter.drawEllipse(
+            QPointF(pos.x(), pos.y() + 9), 3, 3
+        )
+
+    def draw_laptop_icon(self, painter, pos):
+        c = QColor("#159B72")
+        painter.setPen(QPen(c, 2.1))
+        painter.setBrush(Qt.NoBrush)
+
+        painter.drawRoundedRect(
+            int(pos.x() - 14),
+            int(pos.y() - 12),
+            28,
+            20,
+            2,
+            2
+        )
+
+        painter.drawLine(
+            int(pos.x() - 19),
+            int(pos.y() + 12),
+            int(pos.x() + 19),
+            int(pos.y() + 12)
+        )
+
+        painter.drawLine(
+            int(pos.x() - 9),
+            int(pos.y() + 15),
+            int(pos.x() + 9),
+            int(pos.y() + 15)
+        )
+
+    def draw_phone_icon(self, painter, pos):
+        c = QColor("#159B72")
+        painter.setPen(QPen(c, 2.1))
+        painter.setBrush(Qt.NoBrush)
+
+        painter.drawRoundedRect(
+            int(pos.x() - 10),
+            int(pos.y() - 17),
+            20,
+            34,
+            4,
+            4
+        )
+
+        painter.drawEllipse(
+            QPointF(pos.x(), pos.y() + 12), 2, 2
+        )
+
+    def draw_tv_icon(self, painter, pos):
+        c = QColor("#159B72")
+        painter.setPen(QPen(c, 2.1))
+        painter.setBrush(Qt.NoBrush)
+
+        painter.drawRoundedRect(
+            int(pos.x() - 17),
+            int(pos.y() - 11),
+            34,
+            23,
+            3,
+            3
+        )
+
+        painter.drawLine(
+            int(pos.x()),
+            int(pos.y() + 12),
+            int(pos.x()),
+            int(pos.y() + 17)
+        )
+
+        painter.drawLine(
+            int(pos.x() - 8),
+            int(pos.y() + 17),
+            int(pos.x() + 8),
+            int(pos.y() + 17)
+        )
+
+    def draw_desktop_icon(self, painter, pos):
+        c = QColor("#159B72")
+        painter.setPen(QPen(c, 2.1))
+        painter.setBrush(Qt.NoBrush)
+
+        painter.drawRoundedRect(
+            int(pos.x() - 17),
+            int(pos.y() - 13),
+            34,
+            24,
+            3,
+            3
+        )
+
+        painter.drawLine(
+            int(pos.x()),
+            int(pos.y() + 11),
+            int(pos.x()),
+            int(pos.y() + 17)
+        )
+
+        painter.drawLine(
+            int(pos.x() - 9),
+            int(pos.y() + 17),
+            int(pos.x() + 9),
+            int(pos.y() + 17)
+        )
+
+    # ----------------------------------------------------------
+    # CARDS / NAMES
+    # ----------------------------------------------------------
+
+    def draw_router_card(self, painter, data, pos):
+
+        width = 176
+        height = 66
+
+        x = int(
+            pos.x() - width / 2
+        )
+
+        y = int(
+            pos.y() + 58
+        )
+
+        x = max(
+            10,
+            min(
+                x,
+                self.width() - width - 10
+            )
+        )
+
+        y = max(
+            12,
+            min(
+                y,
+                self.height() - height - 12
+            )
+        )
+
+        self.draw_card(
+            painter,
+            x,
+            y,
+            width,
+            height,
+            selected=(
+                self.selected_node
+                == self.get_router()
+            )
+        )
+
+        ip = data.get(
+            "ip",
+            data.get(
+                "address",
+                ""
+            )
+        )
+
+        self.draw_text(
+            painter,
+            "MAIN ROUTER",
+            x + 13,
+            y + 22,
+            width - 26,
+            "#183A38",
+            11,
+            True
+        )
+
+        self.draw_text(
+            painter,
+            str(ip),
+            x + 13,
+            y + 41,
+            width - 26,
+            "#6E8580",
+            9,
+            False
+        )
+
+        self.draw_text(
+            painter,
+            "GATEWAY  •  ACCESS POINT",
+            x + 13,
+            y + 58,
+            width - 26,
+            "#8AA19C",
+            8,
+            True
+        )
+
+    def draw_device_card(self, painter, node, data, pos, is_local):
+
+        width = 148
+        height = 62
+
+        cx = self.width() / 2
+        cy = self.height() * 0.47
+
+        dx = pos.x() - cx
+        dy = pos.y() - cy
+
+        # Place the information card outside the node, with a larger
+        # visual gap than V1. This keeps the icon completely unobstructed.
+        if abs(dy) > abs(dx) * 1.10:
+
+            x = int(
+                pos.x() - width / 2
+            )
+
+            if dy < 0:
+                y = int(
+                    pos.y() - height - 72
+                )
+            else:
+                y = int(
+                    pos.y() + 72
+                )
+
+        else:
+
+            y = int(
+                pos.y() - height / 2
+            )
+
+            if dx < 0:
+                x = int(
+                    pos.x() - width - 72
+                )
+            else:
+                x = int(
+                    pos.x() + 72
+                )
+
+        # Keep cards completely inside the canvas.
+        x = max(
+            10,
+            min(
+                x,
+                self.width() - width - 10
+            )
+        )
+
+        y = max(
+            12,
+            min(
+                y,
+                self.height() - height - 12
+            )
+        )
+
+        self.draw_card(
+            painter,
+            x,
+            y,
+            width,
+            height,
+            selected=(
+                self.selected_node == node
+            )
+        )
+
+        label = (
+            "THIS DEVICE"
+            if is_local
+            else str(
+                data.get(
+                    "label",
+                    "DEVICE"
+                )
+            ).upper()
+        )
+
+        ip = data.get(
+            "ip",
+            node
+        )
+
+        self.draw_text(
+            painter,
+            label,
+            x + 11,
+            y + 19,
+            width - 22,
+            "#087B55" if is_local else "#183A38",
+            9,
+            True
+        )
+
+        self.draw_text(
+            painter,
+            str(ip),
+            x + 11,
+            y + 36,
+            width - 22,
+            "#6E8580",
+            8,
+            False
+        )
+
+        rssi = data.get("rssi")
+        distance = data.get("distance")
+
+        if rssi is not None:
+            try:
+                signal_text = (
+                    f"RSSI {float(rssi):.0f} dBm"
+                )
+            except (
+                TypeError,
+                ValueError
+            ):
+                signal_text = "Signal measured"
+
+            if distance is not None:
+                try:
+                    signal_text += (
+                        f"  •  {float(distance):.1f} m"
+                    )
+                except (
+                    TypeError,
+                    ValueError
+                ):
+                    pass
+
+        else:
+            signal_text = "Signal not measured"
+
+        self.draw_badge(
+            painter,
+            x + 10,
+            y + 42,
+            width - 20,
+            signal_text
+        )
+
+    def draw_card(self, painter, x, y, width, height, selected=False):
+
+        painter.setPen(Qt.NoPen)
+        painter.setBrush(QColor(0, 0, 0, 45))
+        painter.drawRoundedRect(
+            x + 2,
+            y + 4,
+            width,
+            height,
+            15,
+            15
+        )
+
+        border = (
+            QColor("#59E3AD")
+            if selected
+            else QColor("#D6E6DC")
+        )
+
+        painter.setPen(
+            QPen(
+                border,
+                2 if selected else 1
+            )
+        )
+        painter.setBrush(QColor("#FFFDF8"))
+
+        painter.drawRoundedRect(
+            x,
+            y,
+            width,
+            height,
+            15,
+            15
+        )
+
+    def draw_badge(self, painter, x, y, width, text):
+
+        painter.setPen(
+            QPen(
+                QColor("#9DEACB"),
+                1
+            )
+        )
+
+        painter.setBrush(QColor("#CFF8E5"))
+
+        painter.drawRoundedRect(
+            x,
+            y,
+            width,
+            17,
+            8,
+            8
+        )
+
+        self.draw_text(
+            painter,
+            text,
+            x + 5,
+            y + 12,
+            width - 10,
+            "#087B55",
+            7,
+            True,
+            Qt.AlignCenter
+        )
+
+    def draw_text(
+        self,
+        painter,
+        text,
+        x,
+        baseline,
+        width,
+        color,
+        size,
+        bold=False,
+        alignment=Qt.AlignLeft
+    ):
+        font = QFont("Segoe UI")
+        font.setPointSize(size)
+        font.setBold(bold)
+
+        painter.setFont(font)
+        painter.setPen(QColor(color))
+
+        painter.drawText(
+            int(x),
+            int(baseline - size + 5),
+            int(width),
+            int(size + 10),
+            alignment,
+            str(text)
+        )
+
+    # ----------------------------------------------------------
+    # MOUSE
+    # ----------------------------------------------------------
+
+    def find_node_at(self, position):
+        for node, node_position in self.node_positions.items():
+            distance = math.hypot(
+                position.x() - node_position.x(),
+                position.y() - node_position.y()
+            )
+
+            if distance <= 44:
+                return node
+
+        return None
+
+    def mousePressEvent(self, event):
+        if event.button() != Qt.LeftButton:
+            return
+
+        node = self.find_node_at(event.position())
+
+        if node is not None:
+            self.selected_node = node
+            self.device_selected.emit(node)
+        else:
+            self.selected_node = None
+
+        self.update()
+
+    def mouseMoveEvent(self, event):
+        node = self.find_node_at(event.position())
+
+        if node != self.hovered_node:
+            self.hovered_node = node
+            self.update()
+
+    def leaveEvent(self, event):
+        self.hovered_node = None
+        self.update()
+        super().leaveEvent(event)

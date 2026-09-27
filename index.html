@@ -1,0 +1,882 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>WAVEIUM — Cross-Platform Network Topology & Visualizer</title>
+  
+  <!-- PWA Meta Tags -->
+  <link rel="manifest" href="/manifest.json">
+  <meta name="theme-color" content="#5b4df0">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <meta name="apple-mobile-web-app-title" content="Waveium">
+  <link rel="apple-touch-icon" href="/icons/icon-192.png">
+  <link rel="icon" type="image/png" href="/icons/icon-192.png">
+
+  <!-- Waveium Design System CSS -->
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+
+  <!-- ── APP HEADER ── -->
+  <header class="app-header">
+    <div class="brand">
+      <div class="brand-icon">📡</div>
+      <div>
+        <div class="brand-title">WAVEIUM</div>
+        <div style="font-size: 10px; font-weight: 700; color: var(--text-muted); letter-spacing: 0.5px;">MOBILE & PC COMPANION</div>
+      </div>
+    </div>
+
+    <!-- Live Telemetry Badges -->
+    <div class="header-telemetry">
+      <div class="badge badge-live">
+        <span class="pulse-dot"></span>
+        <span id="hdrSsid">Wi-Fi</span>
+      </div>
+
+      <div class="badge">
+        <span>📶</span>
+        <span id="hdrRssi">-52 dBm</span>
+      </div>
+
+      <div class="badge hide-mobile" id="hdrCellularBadge" style="background:#f4f2ff; color:#5b4df0; border-color:rgba(91,77,240,0.25);">
+        <span>📱</span>
+        <span>4G / 5G Active</span>
+      </div>
+
+      <div class="badge hide-mobile">
+        <span>⚡</span>
+        <span id="hdrRate">1201 Mbps</span>
+      </div>
+
+      <div class="badge hide-mobile">
+        <span>📍</span>
+        <span id="hdrDist">~1.8m</span>
+      </div>
+
+      <!-- Dedicated Mobile & Desktop Instant Refresh Button -->
+      <button id="btnMobileRefresh" class="btn btn-refresh-primary" title="Scan & Refresh Network Signal">
+        <span class="refresh-spinner-icon">🔄</span>
+        <span>Refresh</span>
+      </button>
+
+      <button id="btnInstallPWA" class="btn btn-primary" style="display:none;">
+        <span>📲</span>
+        <span>Install App</span>
+      </button>
+    </div>
+  </header>
+
+  <!-- ── MAIN APP CONTAINER ── -->
+  <div class="app-container">
+    
+    <!-- ── DESKTOP SIDEBAR ── -->
+    <aside class="app-sidebar">
+      <div class="nav-item active" data-tab="topology">
+        <span class="nav-icon">📡</span>
+        <span>Network Topology</span>
+      </div>
+
+      <div class="nav-item" data-tab="live_scan">
+        <span class="nav-icon">🔍</span>
+        <span>Live Scan</span>
+      </div>
+
+      <div class="nav-item" data-tab="devices">
+        <span class="nav-icon">📱</span>
+        <span>Connected Devices</span>
+      </div>
+
+      <div class="nav-item" data-tab="advisor">
+        <span class="nav-icon">🧭</span>
+        <span>Signal Advisor</span>
+      </div>
+
+      <div class="nav-item" data-tab="cellular">
+        <span class="nav-icon">📶</span>
+        <span>Cellular & 5G</span>
+      </div>
+
+      <div class="nav-item" data-tab="analytics">
+        <span class="nav-icon">📊</span>
+        <span>Coverage & Stats</span>
+      </div>
+
+      <div class="nav-item" data-tab="heatmap">
+        <span class="nav-icon">🗺️</span>
+        <span>Wi-Fi Heatmap</span>
+      </div>
+
+      <div class="nav-item" data-tab="speedtest">
+        <span class="nav-icon">⚡</span>
+        <span>Speed Test</span>
+      </div>
+
+      <div class="nav-item" data-tab="channels">
+        <span class="nav-icon">📻</span>
+        <span>Channel Scanner</span>
+      </div>
+
+      <div class="nav-item" data-tab="settings">
+        <span class="nav-icon">⚙️</span>
+        <span>Mobile Link & Settings</span>
+      </div>
+
+      <!-- Quick Summary -->
+      <div class="sidebar-summary">
+        <h4>NETWORK TELEMETRY</h4>
+        <div class="summary-row">
+          <span>Total Nodes:</span>
+          <span id="sumTotalDevices">--</span>
+        </div>
+        <div class="summary-row">
+          <span>Gateway:</span>
+          <span id="sumGateway">192.168.1.1</span>
+        </div>
+        <div class="summary-row">
+          <span>Local Device:</span>
+          <span id="sumLocalIp">127.0.0.1</span>
+        </div>
+        <div class="summary-row">
+          <span>Est. Reach:</span>
+          <span id="sumCoverage">~30m</span>
+        </div>
+      </div>
+    </aside>
+
+    <!-- ── MAIN WORKSPACE CONTENT ── -->
+    <main class="app-main">
+
+      <!-- TAB 1: TOPOLOGY RADAR -->
+      <div class="tab-pane active" id="tab-topology">
+        <div class="topology-workspace">
+          <!-- Canvas Area -->
+          <div class="canvas-container">
+            <!-- Mode & Focus Controls Bar -->
+            <div class="canvas-mode-bar">
+              <div class="mode-pill-group">
+                <button type="button" class="mode-pill active" id="btnModeWifi" title="Wi-Fi Router Topology">
+                  <span class="pill-icon">📡</span>
+                  <span class="pill-text">Wi-Fi Router</span>
+                </button>
+                <button type="button" class="mode-pill" id="btnModeCellular" title="Cellular Tower & Signal Guidance">
+                  <span class="pill-icon">🗼</span>
+                  <span class="pill-text">Cellular Tower</span>
+                </button>
+              </div>
+
+              <!-- 2-Node Mobile Focus Toggle -->
+              <button type="button" class="focus-pill active" id="btnToggleFocus" title="Toggle simplified 2-node view for mobile screens">
+                <span class="focus-icon">📱</span>
+                <span class="focus-text" id="focusLabel">Focus: Router & Device</span>
+              </button>
+            </div>
+
+            <canvas id="radarCanvas"></canvas>
+
+            <!-- Floating Expand Details Button (when drawer is collapsed) -->
+            <button type="button" class="btn-drawer-expand" id="btnExpandDrawer" title="Show Telemetry & Signal Advisor">
+              <span>📊 Details & Advisor ⮜</span>
+            </button>
+
+            <!-- Dynamic Move Closer Guide Slider for Cellular Mode -->
+            <div class="cell-move-guide-bar" id="cellMoveGuideBar" style="display: none;">
+              <div class="cell-guide-header">
+                <div class="cell-guide-title">
+                  <span class="pulse-indicator"></span>
+                  <span><strong>SIGNAL GUIDANCE:</strong> Move closer to the cellular tower / window</span>
+                </div>
+                <div class="cell-guide-val" id="cellGuideVal">-84 dBm · Primary Sector</div>
+              </div>
+              <div class="cell-guide-slider-row">
+                <span class="slider-end-label">Deep Indoors (-115 dBm)</span>
+                <input type="range" id="cellSimSlider" min="-115" max="-70" value="-84" step="1" class="cell-range-slider" />
+                <span class="slider-end-label">Window / High Ground (-70 dBm)</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Selected Device Details Drawer (Collapsible) -->
+          <div class="details-drawer" id="detailsDrawer">
+            <div class="drawer-header">
+              <span class="drawer-title" id="drawerNodeTitle">NETWORK TOPOLOGY</span>
+              <div style="display:flex; align-items:center; gap:6px;">
+                <button type="button" class="btn-drawer-collapse" id="btnCollapseDrawer" title="Minimize / Collapse Details Window">
+                  <span>⮞</span>
+                  <span class="collapse-btn-text">Minimize</span>
+                </button>
+              </div>
+            </div>
+
+            <!-- Compact Signal Advisor Card (Short representation in Topology Tab) -->
+            <div class="drawer-mini-advisor" id="drawerMiniAdvisor">
+              <div class="mini-adv-header">
+                <div style="display:flex; align-items:center; gap:6px;">
+                  <span class="mini-adv-pulse"></span>
+                  <span class="mini-adv-title">LIVE SIGNAL ADVISOR</span>
+                </div>
+                <span class="mini-adv-badge" id="miniAdvBadge">-52 dBm · Core</span>
+              </div>
+              
+              <div class="mini-adv-grid">
+                <div class="mini-adv-stat">
+                  <span class="mini-adv-label">🚶 WALK-AWAY LIMIT</span>
+                  <span class="mini-adv-val" id="miniAdvOutward">~27.2 m</span>
+                  <span class="mini-adv-sub" id="miniAdvOutwardSub">approx. 41 steps left</span>
+                </div>
+                <div class="mini-adv-stat">
+                  <span class="mini-adv-label">🎯 MOVE CLOSER</span>
+                  <span class="mini-adv-val" id="miniAdvInward">0.0 m</span>
+                  <span class="mini-adv-sub" id="miniAdvInwardSub">In Core zone</span>
+                </div>
+              </div>
+
+              <div class="mini-adv-guidance" id="miniAdvGuidance">
+                🚶 <strong>Advice:</strong> You have plenty of range remaining. You can walk up to ~27m further before Wi-Fi disconnects.
+              </div>
+            </div>
+
+            <div class="drawer-body" id="drawerNodeContent">
+              <p style="color:var(--text-muted); font-size:12px;">Select or tap any node on the topology radar to view full IP, MAC, signal RSSI, and estimated distance metrics.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- TAB 2: LIVE SCAN -->
+      <div class="tab-pane" id="tab-live_scan">
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:4px;">
+          <div>
+            <h2 style="font-size:18px; font-weight:900; color:var(--text);">Discovered Network Devices</h2>
+            <p style="font-size:12px; color:var(--text-muted);">Real-time ARP & ping sweep scan of the local subnet.</p>
+          </div>
+          <button class="btn btn-primary btn-scan">
+            <span>🔍</span>
+            <span>Rescan Network</span>
+          </button>
+        </div>
+
+        <div class="data-table-card">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>Device Name</th>
+                <th>IP Address</th>
+                <th>MAC Address</th>
+                <th>Vendor / Manufacturer</th>
+                <th>Signal / Est. Range</th>
+              </tr>
+            </thead>
+            <tbody id="liveScanTableBody">
+              <tr>
+                <td colspan="5" style="text-align:center; padding:24px; color:var(--text-muted);">Scanning subnet...</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- TAB 3: CONNECTED DEVICES -->
+      <div class="tab-pane" id="tab-devices">
+        <div>
+          <h2 style="font-size:18px; font-weight:900; color:var(--text);">Device Inventory</h2>
+          <p style="font-size:12px; color:var(--text-muted);">All active clients mapped on the current access point.</p>
+        </div>
+        <div class="advisor-grid" id="devicesCardGrid">
+          <!-- Dynamically populated -->
+        </div>
+      </div>
+
+      <!-- TAB 4: SIGNAL ADVISOR (OPTIMIZED FOR WALKING AROUND WITH MOBILE) -->
+      <div class="tab-pane" id="tab-advisor">
+        <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px;">
+          <div>
+            <h2 style="font-size:18px; font-weight:900; color:var(--text);">Precision Signal Advisor & Coverage Navigator</h2>
+            <p style="font-size:12px; color:var(--text-muted);">Calibrated RF propagation physics, exact walking distance, and architectural optimization.</p>
+          </div>
+          <div style="display:flex; align-items:center; gap:8px; flex-wrap:wrap;">
+            <button class="btn btn-outline" id="btnAdvisorRefresh" title="Recalibrate and refresh signal" style="padding:6px 12px; font-size:11px;">
+              <span class="refresh-spinner-icon">🔄</span>
+              <span>Calibrate & Refresh</span>
+            </button>
+            <!-- Mode Toggle between Wi-Fi and Cellular in Advisor -->
+            <div class="mode-pill-group">
+              <button type="button" class="mode-pill active" id="btnAdvTabWifi">
+                <span>📡</span>
+                <span>Wi-Fi Network</span>
+              </button>
+              <button type="button" class="mode-pill" id="btnAdvTabCellular">
+                <span>📶</span>
+                <span>Mobile Data (Cellular)</span>
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- ── SECTION A: WI-FI SIGNAL ADVISOR ── -->
+        <div id="advWifiSection" style="display:flex; flex-direction:column; gap:16px;">
+          <div class="advisor-grid">
+            <div class="advisor-card">
+              <div class="card-label">CURRENT WI-FI RSSI</div>
+              <div class="card-value" id="advRssi">-52 dBm</div>
+              <div id="advQualityBadge" style="font-size:11px; font-weight:800; color:var(--green); margin-top:2px;">Excellent Signal (100%)</div>
+              <div class="signal-meter-bar-container">
+                <div id="advSignalBarFill" class="signal-meter-bar-fill" style="width:92%; background:var(--green);"></div>
+              </div>
+            </div>
+
+            <div class="advisor-card" style="border-color:rgba(91,77,240,0.3); background:#fcfbff;">
+              <div class="card-label">DISTANCE TO ROUTER</div>
+              <div class="card-value" style="color:var(--primary);" id="advDist">~1.8 m</div>
+              <div id="advStepsCount" style="font-size:11px; font-weight:800; color:var(--primary);">approx. 3 human steps</div>
+              <div style="font-size:10px; color:var(--text-muted); margin-top:4px;">Log-Distance Model (n = 2.8)</div>
+            </div>
+
+            <div class="advisor-card">
+              <div class="card-label">LINK BANDWIDTH & BAND</div>
+              <div class="card-value" style="color:var(--blue);" id="advRate">1201 Mbps</div>
+              <div id="advBandDetails" style="font-size:11px; color:var(--text-muted);">5 GHz Band · Channel 36 · 802.11ax</div>
+            </div>
+
+            <div class="advisor-card">
+              <div class="card-label">RF ACCURACY & CONFIDENCE</div>
+              <div class="card-value" style="color:var(--green);" id="advConfidence">98%</div>
+              <div style="font-size:11px; color:var(--text-muted);">±0.3m variance · Low jitter</div>
+            </div>
+          </div>
+
+          <!-- Wi-Fi Dual Walking Guidance Action Card -->
+          <div class="distance-advice-card">
+            <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px;">
+              <div style="font-size:14px; font-weight:900; color:var(--text);">🚶 PRECISION SIGNAL ESTIMATOR: RANGE & PROXIMITY ADVISOR</div>
+              <span class="badge badge-live">CALIBRATED LOG-DISTANCE</span>
+            </div>
+
+            <!-- Dual Pillar Grid: Outward Range vs Move-In Distance -->
+            <div class="dual-estimator-grid">
+              <!-- Pillar 1: How far you can go (Outward Range) -->
+              <div class="estimator-pillar-card outward-card">
+                <div class="pillar-tag">🚶 MAXIMUM OUTWARD RANGE (HOW FAR YOU CAN GO)</div>
+                <div class="pillar-main-val" id="advOutwardDist">~27.2 m</div>
+                <div class="pillar-sub" id="advOutwardSteps">approx. 41 steps remaining before disconnect</div>
+                <div class="pillar-progress-track">
+                  <div class="pillar-progress-fill" id="advOutwardProgress" style="width: 90%;"></div>
+                </div>
+                <div class="pillar-detail" id="advOutwardDetail">
+                  You are within optimal coverage. You can walk up to ~27.2m further from your router before reaching the Wi-Fi limit zone.
+                </div>
+              </div>
+
+              <!-- Pillar 2: How close you need to move in (Move Closer) -->
+              <div class="estimator-pillar-card inward-card">
+                <div class="pillar-tag">🎯 MOVE CLOSER GUIDANCE (HOW CLOSE TO MOVE IN)</div>
+                <div class="pillar-main-val" id="advInwardDist">0.0 m</div>
+                <div class="pillar-sub" id="advInwardSteps">✓ Optimal position (Already in Core zone)</div>
+                <div class="pillar-badge" id="advInwardBadge">Core Direct Line-of-Sight (&lt; 3m)</div>
+                <div class="pillar-detail" id="advInwardDetail">
+                  Maximum gigabit speed and lowest latency active. Zero physical move required.
+                </div>
+              </div>
+            </div>
+
+            <!-- Range Spectrum Bar showing where you are in the 5 zones -->
+            <div class="range-spectrum-card">
+              <div class="spectrum-header">
+                <span style="font-size:11px; font-weight:800; color:var(--text);">COVERAGE RANGE SPECTRUM</span>
+                <span style="font-size:11px; color:var(--text-muted);" id="advSpectrumPos">Position: Core Zone (~2.8m from router)</span>
+              </div>
+              <div class="spectrum-bar">
+                <div class="spectrum-segment seg-core" title="Core (< 3m)">Core &lt;3m</div>
+                <div class="spectrum-segment seg-strong" title="Strong (~8m)">Strong ~8m</div>
+                <div class="spectrum-segment seg-good" title="Good (~15m)">Good ~15m</div>
+                <div class="spectrum-segment seg-fair" title="Fair (~22m)">Fair ~22m</div>
+                <div class="spectrum-segment seg-limit" title="Limit (~30m)">Limit ~30m</div>
+                <div class="spectrum-marker" id="spectrumMarker" style="left: 9%;" title="You are here">📍</div>
+              </div>
+            </div>
+
+            <div class="dist-meter-banner">
+              <div>
+                <div class="dist-meter-value">
+                  <span>👣</span>
+                  <span id="wifiAdvActionSummary">✓ In Core Optimal Coverage Zone (0m Move Needed)</span>
+                </div>
+                <div class="dist-meter-target">
+                  Target: <strong id="wifiAdvTargetZone">Router Direct Line-of-Sight (&lt; 3m)</strong> · Status: <strong id="wifiAdvGain" style="color:var(--green);">Optimal Bandwidth (4K/8K Capable)</strong>
+                </div>
+              </div>
+            </div>
+
+            <div style="font-size:12px; color:var(--text); line-height:1.6;" id="wifiAdvWalkingAdvice">
+              You are currently inside the optimal core coverage zone of your Wi-Fi router. Direct line-of-sight is maintained with minimal packet loss.
+            </div>
+
+            <div class="dist-steps-grid">
+              <div class="step-card">
+                <span class="step-icon">🖧</span>
+                <div>
+                  <strong>Line-of-Sight Clearance (+8 to +12 dBm)</strong>
+                  <div style="color:var(--text-muted); margin-top:2px;">Maintain an open direct path to the router. Open interior doors to bypass dry-wall attenuation.</div>
+                </div>
+              </div>
+              <div class="step-card">
+                <span class="step-icon">📶</span>
+                <div>
+                  <strong id="wifiBandSteerTitle">Band Steering: 5 GHz Active</strong>
+                  <div id="wifiBandSteerDesc" style="color:var(--text-muted); margin-top:2px;">5 GHz provides ultra-high speeds near the router. If moving behind 2+ concrete walls, switch to 2.4 GHz.</div>
+                </div>
+              </div>
+              <div class="step-card">
+                <span class="step-icon">⚡</span>
+                <div>
+                  <strong>Interference Isolation</strong>
+                  <div style="color:var(--text-muted); margin-top:2px;">Keep devices at least 2 meters away from microwaves, bluetooth transmitters, and large metal panels.</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ── SECTION B: CELLULAR & MOBILE DATA COVERAGE ADVISOR ── -->
+        <div id="advCellularSection" style="display:none; flex-direction:column; gap:16px;">
+          <div class="advisor-grid">
+            <!-- Cell RSRP KPI -->
+            <div class="advisor-card">
+              <div class="card-label">CELLULAR SIGNAL STRENGTH (RSRP)</div>
+              <div class="card-value" style="color:var(--primary);" id="cellAdvRsrpVal">-84 dBm</div>
+              <div id="cellAdvQualityVal" style="font-size:11px; font-weight:800; color:var(--green);">Good Signal (4 of 5 Bars)</div>
+              <div class="signal-meter-bar-container">
+                <div id="cellAdvSignalBarFill" class="signal-meter-bar-fill" style="width:72%; background:var(--green);"></div>
+              </div>
+            </div>
+
+            <!-- Distance to Move KPI -->
+            <div class="advisor-card" style="border-color:rgba(91,77,240,0.3); background:#fcfbff;">
+              <div class="card-label">DISTANCE TO BETTER COVERAGE</div>
+              <div class="card-value" style="color:var(--primary);" id="cellAdvDistVal">~4 meters</div>
+              <div id="cellAdvStepsVal" style="font-size:11px; font-weight:800; color:var(--primary);">approx. 6 steps towards window</div>
+              <div style="font-size:10px; color:var(--text-muted); margin-top:4px;">3GPP TR 38.901 Propagation Model</div>
+            </div>
+
+            <!-- Carrier Throughput -->
+            <div class="advisor-card">
+              <div class="card-label">CARRIER LINK BANDWIDTH</div>
+              <div class="card-value" style="color:var(--blue);" id="cellAdvBwVal">25.0 Mbps</div>
+              <div style="font-size:11px; color:var(--text-muted);">Latency: ~32 ms (Jitter: ±3 ms)</div>
+            </div>
+
+            <!-- Carrier Generation & SINR -->
+            <div class="advisor-card">
+              <div class="card-label">CARRIER SECTOR LINK</div>
+              <div class="card-value" style="color:var(--green);" id="cellAdvGenVal">5G NR</div>
+              <div style="font-size:11px; color:var(--text-muted);" id="cellAdvSinrVal">Est. SINR: 16 dB · Clean Sector</div>
+            </div>
+          </div>
+
+          <!-- Physical Walking Guidance Action Card -->
+          <div class="distance-advice-card">
+            <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px;">
+              <div style="font-size:14px; font-weight:900; color:var(--text);">🚶 PHYSICAL WALKING GUIDANCE (HOW MUCH FURTHER TO MOVE)</div>
+              <span class="badge badge-live">REAL-TIME PROPAGATION</span>
+            </div>
+
+            <div class="dist-meter-banner">
+              <div>
+                <div class="dist-meter-value">
+                  <span>👣</span>
+                  <span id="cellAdvActionSummary">Move ~4 meters closer towards window</span>
+                </div>
+                <div class="dist-meter-target">
+                  Target Coverage: <strong id="cellAdvTargetZone">Core Beam Zone (-75 dBm)</strong> · Expected Gain: <strong id="cellAdvGain" style="color:var(--primary);">+9 dBm boost</strong>
+                </div>
+              </div>
+            </div>
+
+            <div style="font-size:12px; color:var(--text); line-height:1.6;" id="cellAdvWalkingAdvice">
+              Move approximately 4 meters closer towards the exterior window or balcony to enter the Core Beam coverage area.
+            </div>
+
+            <div class="dist-steps-grid">
+              <div class="step-card">
+                <span class="step-icon">🪟</span>
+                <div>
+                  <strong>Window Line-of-Sight (+10 to +15 dBm)</strong>
+                  <div style="color:var(--text-muted); margin-top:2px;">Step towards perimeter windows. Standard glass allows carrier RF to pass with minimal loss.</div>
+                </div>
+              </div>
+              <div class="step-card">
+                <span class="step-icon">🪜</span>
+                <div>
+                  <strong>Vertical Elevation (+6 to +10 dBm)</strong>
+                  <div style="color:var(--text-muted); margin-top:2px;">Moving up one floor clears ground clutter, foliage, and neighbor building reflections.</div>
+                </div>
+              </div>
+              <div class="step-card">
+                <span class="step-icon">🧱</span>
+                <div>
+                  <strong>Avoid Attenuation Walls (-15 dBm)</strong>
+                  <div style="color:var(--text-muted); margin-top:2px;">Elevator shafts, concrete load-bearing pillars, and metal mesh severely degrade reception.</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- TAB: CELLULAR & MOBILE DATA ADVISOR -->
+      <div class="tab-pane" id="tab-cellular">
+        <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px;">
+          <div>
+            <h2 style="font-size:18px; font-weight:900; color:var(--text);">Cellular & Mobile Data Advisor</h2>
+            <p style="font-size:12px; color:var(--text-muted);">Real-time carrier link scan, 3GPP RSRP signal estimation, and indoor room walking advisor.</p>
+          </div>
+          <button class="btn btn-primary" onclick="if(window.cellularAdvisor) window.cellularAdvisor.resetWalkTest();">
+            <span>↺</span>
+            <span>Reset Walk Path</span>
+          </button>
+        </div>
+
+        <!-- 4 KPI Cards -->
+        <div class="advisor-grid">
+          <!-- Card 1: Signal Bars & RSRP -->
+          <div class="advisor-card">
+            <div class="card-label">ESTIMATED CELLULAR SIGNAL (RSRP)</div>
+            <div style="display:flex; align-items:center; justify-content:space-between; margin-top:4px;">
+              <div class="card-value" id="cellRsrp">-84 dBm</div>
+              <div id="cellSignalBars" style="display:flex; align-items:flex-end; gap:3px; height:32px;">
+                <!-- 5 Bars rendered dynamically -->
+              </div>
+            </div>
+            <div id="cellQuality" style="font-size:11px; font-weight:800; color:var(--green); margin-top:2px;">
+              Good Signal (4 of 5 Bars)
+            </div>
+          </div>
+
+          <!-- Card 2: Carrier Generation -->
+          <div class="advisor-card">
+            <div class="card-label">CARRIER NETWORK GENERATION</div>
+            <div class="card-value" style="color:var(--primary);" id="cellGen">5G / 4G LTE</div>
+            <div id="cellDataSaver" style="font-size:11px; color:var(--text-muted); font-weight:700;">Data Saver: OFF</div>
+          </div>
+
+          <!-- Card 3: Downlink Bandwidth -->
+          <div class="advisor-card">
+            <div class="card-label">CARRIER DOWNLINK BANDWIDTH</div>
+            <div class="card-value" style="color:var(--blue);" id="cellDownlink">25.0 Mbps</div>
+            <div style="font-size:11px; color:var(--text-muted);">Estimated 3GPP carrier throughput</div>
+          </div>
+
+          <!-- Card 4: Carrier Latency (RTT) & Jitter -->
+          <div class="advisor-card">
+            <div class="card-label">CARRIER LATENCY & JITTER</div>
+            <div class="card-value" style="color:#8b5cf6;" id="cellRtt">32 ms</div>
+            <div id="cellJitter" style="font-size:11px; color:var(--text-muted); font-weight:700;">Jitter: ±3 ms</div>
+          </div>
+        </div>
+
+        <!-- Dynamic Cellular Advisor Narrative Box -->
+        <div id="cellAdvisorBox" class="advisor-alert" style="background:var(--green-soft); color:#087b55; flex-direction:column; align-items:flex-start; gap:6px;">
+          <!-- Dynamically populated by WaveiumCellularAdvisor -->
+        </div>
+
+        <!-- Walk-Test Real-Time Canvas Trace -->
+        <div class="advisor-card" style="padding:16px;">
+          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
+            <div>
+              <div style="font-size:13px; font-weight:900; color:var(--text);">🚶 Indoor Cellular Walk-Test Trace (30s Window)</div>
+              <div style="font-size:11px; color:var(--text-muted);">Walk with your smartphone from room to room to identify high-penetration zones vs cell dead spots.</div>
+            </div>
+            <span class="badge badge-live">● RECORDING</span>
+          </div>
+          <div style="width:100%; height:180px; position:relative;">
+            <canvas id="cellWalkCanvas" style="width:100%; height:180px; display:block;"></canvas>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- TAB 5: COVERAGE & STATS -->
+      <div class="tab-pane" id="tab-analytics">
+        <div>
+          <h2 style="font-size:18px; font-weight:900; color:var(--text);">Coverage Estimation & Analytics</h2>
+          <p style="font-size:12px; color:var(--text-muted);">Mathematical radio frequency propagation analysis.</p>
+        </div>
+
+        <div class="advisor-grid">
+          <div class="advisor-card">
+            <div class="card-label">COVERAGE ZONES</div>
+            <div style="font-size:13px; line-height:2.0; margin-top:8px;">
+              <div>🟣 <strong>Core Zone (&lt; 3m):</strong> Inner Circle, maximum physical throughput</div>
+              <div>🟢 <strong>Strong Zone (&lt; 8m):</strong> Full high-speed Wi-Fi capability</div>
+              <div>🔵 <strong>Good Zone (&lt; 15m):</strong> Reliable indoor multi-room reception</div>
+              <div>🟡 <strong>Fair Zone (&lt; 22m):</strong> Penetrating walls, basic streaming</div>
+              <div>🔴 <strong>Limit Zone (~30m):</strong> Maximum usable RF boundary</div>
+            </div>
+          </div>
+
+          <div class="advisor-card">
+            <div class="card-label">ROUTER PROPAGATION SPECIFICATIONS</div>
+            <div style="font-size:13px; line-height:2.0; margin-top:8px;">
+              <div>Band: <strong>5.0 GHz / 802.11ax Wi-Fi 6</strong></div>
+              <div>Path Loss Exponent: <strong>2.8 (Indoor office/residential)</strong></div>
+              <div>Reference Power (A0): <strong>-42 dBm @ 1.0m</strong></div>
+              <div>Estimated Coverage Radius: <strong>~30 meters (3000 cm)</strong></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- TAB 6: MOBILE LINK & SETTINGS -->
+      <div class="tab-pane" id="tab-settings">
+        <div>
+          <h2 style="font-size:18px; font-weight:900; color:var(--text);">Mobile App Link & Device Sync</h2>
+          <p style="font-size:12px; color:var(--text-muted);">Access Waveium from any smartphone or tablet anywhere.</p>
+        </div>
+
+        <div class="advisor-card" style="margin-bottom:16px;">
+          <h3 style="font-size:15px; color:var(--primary); margin-bottom:8px;">🌐 Your Permanent Public Link</h3>
+          <p style="font-size:12px; color:var(--text-muted); margin-bottom:12px;">This link is permanently reserved for your account and never changes across reboots:</p>
+          <div style="display:flex; align-items:center; gap:12px; flex-wrap:wrap;">
+            <a href="https://imitate-sneer-paparazzi.ngrok-free.dev" target="_blank" style="color:var(--primary); font-family:monospace; font-weight:700; font-size:13px; background:var(--primary-soft); padding:8px 14px; border-radius:8px; text-decoration:none; display:inline-block;">
+              🔗 https://imitate-sneer-paparazzi.ngrok-free.dev
+            </a>
+          </div>
+        </div>
+
+        <div class="advisor-card">
+          <h3 style="font-size:15px; color:var(--primary); margin-bottom:12px;">📱 How to Open & Install on Mobile</h3>
+          <ol style="font-size:13px; line-height:1.8; margin-left:18px; color:var(--text);">
+            <li>Open Safari (iPhone) or Chrome (Android) and visit: <strong style="color:var(--primary);">https://imitate-sneer-paparazzi.ngrok-free.dev</strong></li>
+            <li>On first visit, tap the blue <strong>Visit Site</strong> button once.</li>
+            <li><strong>Install to Home Screen:</strong> In Safari, tap <em>Share ➔ Add to Home Screen</em>. In Chrome, tap <em>⋮ ➔ Install App</em>.</li>
+            <li>Local Wi-Fi fallback: <strong style="font-family:monospace; background:rgba(0,0,0,0.05); padding:2px 6px; border-radius:4px;" id="mobileUrlDisplay">http://[Your-PC-IP]:5000</strong></li>
+          </ol>
+        </div>
+      </div>
+
+      <!-- TAB 7: WI-FI HEATMAP -->
+      <div class="tab-pane" id="tab-heatmap">
+        <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:12px; margin-bottom:12px;">
+          <div>
+            <h2 style="font-size:18px; font-weight:900; color:var(--text);">🗺️ Room-by-Room Wi-Fi Signal Heatmap</h2>
+            <p style="font-size:12px; color:var(--text-muted);">Walk room-to-room with your phone/laptop to record RF dead zones and wall attenuation.</p>
+          </div>
+          <div style="display:flex; align-items:center; gap:8px;">
+            <button type="button" class="btn btn-outline" id="btnResetHeatmap" style="font-size:12px; padding:6px 14px;">↺ Reset Map</button>
+          </div>
+        </div>
+
+        <!-- Sampling Control Bar -->
+        <div class="advisor-card" style="margin-bottom:14px; background:linear-gradient(135deg, rgba(91,77,240,0.05), rgba(0,196,140,0.05)); border:1px solid rgba(91,77,240,0.2);">
+          <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:12px;">
+            <div style="display:flex; align-items:center; gap:10px; flex-wrap:wrap;">
+              <span style="font-size:13px; font-weight:700; color:var(--text);">Current Room:</span>
+              <select id="heatmapRoomSelect" class="form-select" style="padding:8px 14px; border-radius:10px; border:1px solid var(--border); font-size:13px; font-weight:700; background:var(--card-bg); color:var(--text); cursor:pointer;">
+                <option value="living_room">🛋️ Living Room</option>
+                <option value="master_bedroom">🛏️ Master Bedroom</option>
+                <option value="home_office">💻 Home Office</option>
+                <option value="kitchen">🍳 Kitchen</option>
+                <option value="balcony">🌿 Balcony / Garden</option>
+              </select>
+            </div>
+            <button type="button" class="btn btn-primary" id="btnSampleRoom" style="box-shadow:0 4px 14px rgba(91,77,240,0.25);">
+              <span>📍 Sample Room Signal Now</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- Heatmap Blueprint Canvas -->
+        <div class="canvas-container" style="min-height:380px; margin-bottom:16px; border-radius:16px; overflow:hidden; border:1px solid rgba(255,255,255,0.08);">
+          <canvas id="heatmapCanvas"></canvas>
+        </div>
+
+        <!-- Room Scorecards Grid -->
+        <div style="margin-top:14px;">
+          <h3 style="font-size:15px; font-weight:800; color:var(--text); margin-bottom:10px;">📋 Room Signal Scorecards & Recommendations</h3>
+          <div class="heatmap-cards-grid" id="heatmapRoomList">
+            <!-- Populated by heatmap.js -->
+          </div>
+        </div>
+      </div>
+
+      <!-- TAB 8: SPEED TEST & LAN BENCHMARK -->
+      <div class="tab-pane" id="tab-speedtest">
+        <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:12px; margin-bottom:12px;">
+          <div>
+            <h2 style="font-size:18px; font-weight:900; color:var(--text);">⚡ Wi-Fi & LAN Throughput Benchmark</h2>
+            <p style="font-size:12px; color:var(--text-muted);">Real-time throughput benchmark measuring raw transmission rate, latency, and jitter.</p>
+          </div>
+        </div>
+
+        <!-- Speedometer Card -->
+        <div class="advisor-card" style="text-align:center; padding:24px 16px; margin-bottom:16px; background:#0f172a; border:1px solid rgba(255,255,255,0.1);">
+          <div style="max-width:400px; margin:0 auto;">
+            <canvas id="speedometerCanvas"></canvas>
+          </div>
+          <div style="margin-top:10px; font-size:13px; font-weight:700; color:#94a3b8;" id="speedTestPhaseText">Ready to benchmark</div>
+          <div style="margin-top:16px;">
+            <button type="button" class="btn btn-primary" id="btnStartSpeedTest" style="font-size:15px; padding:12px 28px; border-radius:30px; box-shadow:0 4px 18px rgba(91,77,240,0.35);">
+              <span>▶ Start Speed Test</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- Metrics 4-Grid -->
+        <div class="stats-grid" style="margin-bottom:16px;">
+          <div class="stat-card">
+            <div class="stat-val" id="stDownload" style="color:#00c48c;">-- Mbps</div>
+            <div class="stat-lbl">📥 Download Speed</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-val" id="stUpload" style="color:#0ea5e9;">-- Mbps</div>
+            <div class="stat-lbl">📤 Upload Speed</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-val" id="stPing" style="color:var(--primary);">-- ms</div>
+            <div class="stat-lbl">⚡ Ping (Latency)</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-val" id="stJitter" style="color:#f59e0b;">-- ms</div>
+            <div class="stat-lbl">〰️ Jitter</div>
+          </div>
+        </div>
+
+        <!-- Connection Rating Card -->
+        <div class="advisor-card">
+          <div style="display:flex; justify-content:space-between; align-items:center;">
+            <div>
+              <div class="card-label">CONNECTION QUALITY GRADE</div>
+              <div style="font-size:13px; color:var(--text); margin-top:6px;" id="stGradeDesc">Run the speed test to evaluate suitability for 4K streaming, gaming, and remote work.</div>
+            </div>
+            <div style="font-size:36px; font-weight:900; color:#00c48c;" id="stGrade">--</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- TAB 9: CHANNEL SPECTRUM SCANNER -->
+      <div class="tab-pane" id="tab-channels">
+        <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:12px; margin-bottom:12px;">
+          <div>
+            <h2 style="font-size:18px; font-weight:900; color:var(--text);">📻 Wi-Fi Channel & Interference Scanner</h2>
+            <p style="font-size:12px; color:var(--text-muted);">Real-time RF spectrum analysis of neighboring Wi-Fi networks to identify the cleanest channel.</p>
+          </div>
+          <div style="display:flex; align-items:center; gap:8px;">
+            <div class="mode-pill-group">
+              <button type="button" class="mode-pill" id="btnBand2G">2.4 GHz</button>
+              <button type="button" class="mode-pill active" id="btnBand5G">5 GHz</button>
+            </div>
+            <button type="button" class="btn btn-outline" id="btnRefreshChannels" style="padding:6px 14px; font-size:12px;">🔄 Rescan Spectrum</button>
+          </div>
+        </div>
+
+        <!-- Recommendation Banner -->
+        <div class="advisor-card" style="margin-bottom:16px; border-left:4px solid #00c48c;">
+          <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px;">
+            <div>
+              <div class="card-label">RECOMMENDED CHANNEL OPTIMIZATION</div>
+              <div style="font-size:16px; font-weight:800; color:var(--text); margin-top:4px;" id="chanRecommendVal">Analyzing cleanest frequency...</div>
+              <div style="font-size:12px; color:var(--text-muted); margin-top:4px;" id="chanRecommendDesc">Scan nearby networks to check overlapping channel congestion.</div>
+            </div>
+            <div style="text-align:right;">
+              <span class="badge" style="background:var(--primary-soft); color:var(--primary); font-size:12px; font-weight:800;" id="chanCurrentVal">Channel --</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Frequency Curve Canvas -->
+        <div class="canvas-container" style="min-height:260px; margin-bottom:16px; border-radius:16px; overflow:hidden; border:1px solid rgba(255,255,255,0.08);">
+          <canvas id="channelSpectrumCanvas"></canvas>
+        </div>
+
+        <!-- Visible Networks Table -->
+        <div class="advisor-card">
+          <h3 style="font-size:15px; font-weight:800; color:var(--text); margin-bottom:10px;">📡 Detected Neighborhood Networks</h3>
+          <div class="table-container">
+            <table class="table">
+              <thead>
+                <tr>
+                  <th>SSID</th>
+                  <th>Channel</th>
+                  <th>Band</th>
+                  <th>Signal Strength</th>
+                  <th>BSSID (MAC)</th>
+                </tr>
+              </thead>
+              <tbody id="channelNetworksTable">
+                <tr><td colspan="5" style="text-align:center; padding:20px; color:var(--text-muted);">Scanning channels...</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+    </main>
+  </div>
+
+  <!-- ── MOBILE BOTTOM NAVIGATION BAR ── -->
+  <nav class="mobile-nav">
+    <div class="mobile-nav-item active" data-tab="topology">
+      <span class="nav-icon">📡</span>
+      <span>Topology</span>
+    </div>
+
+    <div class="mobile-nav-item" data-tab="live_scan">
+      <span class="nav-icon">🔍</span>
+      <span>Scan</span>
+    </div>
+
+    <div class="mobile-nav-item" data-tab="heatmap">
+      <span class="nav-icon">🗺️</span>
+      <span>Heatmap</span>
+    </div>
+
+    <div class="mobile-nav-item" data-tab="speedtest">
+      <span class="nav-icon">⚡</span>
+      <span>Speed</span>
+    </div>
+
+    <div class="mobile-nav-item" data-tab="channels">
+      <span class="nav-icon">📻</span>
+      <span>Channels</span>
+    </div>
+
+    <div class="mobile-nav-item" data-tab="cellular">
+      <span class="nav-icon">📶</span>
+      <span>Cellular</span>
+    </div>
+
+    <div class="mobile-nav-item" data-tab="advisor">
+      <span class="nav-icon">🧭</span>
+      <span>Advisor</span>
+    </div>
+
+    <div class="mobile-nav-item" data-tab="settings">
+      <span class="nav-icon">⚙️</span>
+      <span>Sync</span>
+    </div>
+  </nav>
+
+  <!-- Load Scripts -->
+  <script src="/js/radar.js"></script>
+  <script src="/js/cellular.js"></script>
+  <script src="/js/heatmap.js"></script>
+  <script src="/js/speedtest.js"></script>
+  <script src="/js/channels.js"></script>
+  <script src="/js/app.js"></script>
+
+  <script>
+    // Fetch and display exact mobile URL in the settings tab
+    fetch('/api/server-info')
+      .then(res => res.json())
+      .then(info => {
+        const el = document.getElementById('mobileUrlDisplay');
+        if (el && info.mobile_url) {
+          el.textContent = info.mobile_url;
+        }
+      })
+      .catch(() => {});
+  </script>
+</body>
+</html>
