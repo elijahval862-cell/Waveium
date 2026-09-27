@@ -7,10 +7,46 @@ import threading
 from flask import Flask, send_from_directory, jsonify, request, Response
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
-from core.network_adapter import NetworkAdapter
-from core.network_scanner import NetworkScanner
-from core.graph_generator import WaveiumGraphGenerator
-from core.device_metrics import DeviceMetrics
+try:
+    from core.network_adapter import NetworkAdapter
+    from core.network_scanner import NetworkScanner
+    from core.graph_generator import WaveiumGraphGenerator
+    from core.device_metrics import DeviceMetrics
+    adapter = NetworkAdapter()
+    scanner = NetworkScanner()
+except Exception as e:
+    print(f"[Waveium Web] Cloud fallback mode initialized: {e}")
+    class FallbackAdapter:
+        def get_live_network(self): return None
+        def get_channel_scan(self): return None
+    class FallbackScanner:
+        gateway = "192.168.1.1"
+        def scan(self): return {}
+        def get_arp_devices(self): return []
+    class WaveiumGraphGenerator:
+        @staticmethod
+        def estimate_distance(rssi): return round(10 ** ((-40 - (rssi or -55)) / (10 * 2.2)), 2)
+        @staticmethod
+        def estimate_router_coverage(band="5 GHz", current_rssi=-55, current_distance=2.5):
+            return {"max_distance": 35.0, "fair_distance": 22.0, "status": "EXCELLENT"}
+        @staticmethod
+        def build_network(data):
+            import networkx as nx
+            G = nx.Graph()
+            gw = data.get("gateway", "192.168.1.1")
+            G.add_node(gw, type="router", label=f"Router ({gw})", ip=gw)
+            host = data.get("local_ip", "127.0.0.1")
+            if host and host != gw:
+                G.add_node(host, type="local_device", label=f"This Device ({host})", ip=host)
+                G.add_edge(gw, host)
+            for d in data.get("devices", []):
+                ip = d.get("ip")
+                if ip and ip != gw:
+                    G.add_node(ip, type="device", label=d.get("hostname", ip), ip=ip, rssi=d.get("rssi", -60))
+                    G.add_edge(gw, ip)
+            return G
+    adapter = FallbackAdapter()
+    scanner = FallbackScanner()
 
 app = Flask(__name__, static_folder="web")
 
@@ -32,9 +68,6 @@ _network_data = {
 }
 _is_scanning = False
 _last_scan_time = 0
-
-adapter = NetworkAdapter()
-scanner = NetworkScanner()
 
 def get_host_ip():
     """Detect local IP on the active Wi-Fi / LAN network."""
