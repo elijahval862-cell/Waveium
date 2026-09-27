@@ -15,7 +15,1289 @@
   <link rel="icon" type="image/png" href="/icons/icon-192.png">
 
   <!-- Waveium Design System CSS -->
-  <link rel="stylesheet" href="/css/style.css">
+  <style>
+:root {
+  --primary: #5b4df0;
+  --primary-dark: #3827d9;
+  --primary-soft: #f2efff;
+  --green: #00c48c;
+  --green-soft: #e8fbf5;
+  --blue: #3b82f6;
+  --amber: #f59e0b;
+  --red: #f43f5e;
+  --bg: #fbf7f4;
+  --card-bg: #ffffff;
+  --border: #ececf6;
+  --text: #11142d;
+  --text-muted: #737791;
+  --font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  -webkit-tap-highlight-color: transparent;
+}
+
+body {
+  font-family: var(--font-family);
+  background: var(--bg);
+  color: var(--text);
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  overflow-x: hidden;
+}
+
+/* ── HEADER ── */
+.app-header {
+  background: #ffffff;
+  border-bottom: 1px solid var(--border);
+  padding: 12px 20px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+}
+
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.brand-icon {
+  width: 34px;
+  height: 34px;
+  border-radius: 10px;
+  background: var(--primary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #fff;
+  font-size: 18px;
+  box-shadow: 0 4px 10px rgba(91, 77, 240, 0.25);
+}
+
+.brand-title {
+  font-size: 18px;
+  font-weight: 900;
+  letter-spacing: 0.5px;
+  color: var(--primary);
+}
+
+.header-telemetry {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 5px 12px;
+  border-radius: 20px;
+  font-size: 11px;
+  font-weight: 700;
+  background: var(--primary-soft);
+  color: var(--primary);
+  border: 1px solid rgba(91, 77, 240, 0.15);
+}
+
+.badge-live {
+  background: var(--green-soft);
+  color: #087b55;
+  border-color: rgba(0, 196, 140, 0.25);
+}
+
+.pulse-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--green);
+  box-shadow: 0 0 0 3px rgba(0, 196, 140, 0.25);
+  animation: pulse 1.8s infinite;
+}
+
+@keyframes pulse {
+  0% { transform: scale(0.95); opacity: 0.8; }
+  50% { transform: scale(1.2); opacity: 1; }
+  100% { transform: scale(0.95); opacity: 0.8; }
+}
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 7px 14px;
+  border-radius: 12px;
+  font-size: 12px;
+  font-weight: 800;
+  border: none;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.btn-primary {
+  background: var(--primary);
+  color: #fff;
+}
+
+.btn-primary:hover {
+  background: var(--primary-dark);
+}
+
+.btn-outline {
+  background: #ffffff;
+  color: var(--primary);
+  border: 1.5px solid var(--primary);
+}
+
+.btn-outline:hover {
+  background: var(--primary-soft);
+}
+
+/* ── LAYOUT CONTAINER ── */
+.app-container {
+  display: flex;
+  flex: 1;
+  position: relative;
+  overflow: hidden;
+}
+
+/* ── SIDEBAR (DESKTOP) ── */
+.app-sidebar {
+  width: 240px;
+  background: #ffffff;
+  border-right: 1px solid var(--border);
+  display: flex;
+  flex-direction: column;
+  padding: 16px 12px;
+  gap: 6px;
+  flex-shrink: 0;
+}
+
+.nav-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 14px;
+  border-radius: 14px;
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--text-muted);
+  cursor: pointer;
+  transition: all 0.2s ease;
+  border: 1px solid transparent;
+}
+
+.nav-item:hover {
+  background: #f7f6fd;
+  color: var(--primary);
+}
+
+.nav-item.active {
+  background: var(--primary-soft);
+  color: var(--primary);
+  border-color: rgba(91, 77, 240, 0.2);
+}
+
+.nav-icon {
+  font-size: 16px;
+}
+
+.sidebar-summary {
+  margin-top: auto;
+  background: #faf8fe;
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  padding: 14px;
+  font-size: 11px;
+}
+
+.sidebar-summary h4 {
+  font-size: 12px;
+  font-weight: 900;
+  color: var(--primary);
+  margin-bottom: 8px;
+}
+
+.summary-row {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 4px;
+  color: var(--text-muted);
+}
+
+.summary-row span:last-child {
+  font-weight: 700;
+  color: var(--text);
+}
+
+/* ── MAIN WORKSPACE ── */
+.app-main {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  padding: 16px;
+  gap: 16px;
+  overflow-y: auto;
+  position: relative;
+}
+
+.tab-pane {
+  display: none;
+  flex: 1;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.tab-pane.active {
+  display: flex;
+}
+
+/* ── TOPOLOGY RADAR CARD ── */
+.topology-workspace {
+  display: flex;
+  flex: 1;
+  gap: 16px;
+  min-height: 520px;
+}
+
+.canvas-container {
+  flex: 1;
+  background: #ffffff;
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  position: relative;
+  overflow: hidden;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.02);
+  min-height: 480px;
+}
+
+#radarCanvas {
+  width: 100%;
+  height: 100%;
+  display: block;
+  cursor: grab;
+}
+
+#radarCanvas:active {
+  cursor: grabbing;
+}
+
+/* ── CANVAS CONTROLS & FLOATING MODE BAR ── */
+.canvas-mode-bar {
+  position: absolute;
+  top: 14px;
+  left: 14px;
+  right: 14px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 10px;
+  z-index: 10;
+  pointer-events: none;
+}
+
+.mode-pill-group {
+  display: inline-flex;
+  background: rgba(255, 255, 255, 0.92);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  padding: 4px;
+  border-radius: 30px;
+  border: 1px solid var(--border);
+  box-shadow: 0 4px 14px rgba(91, 77, 240, 0.08);
+  pointer-events: auto;
+}
+
+.mode-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 14px;
+  border-radius: 20px;
+  border: none;
+  background: transparent;
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--text-muted);
+  cursor: pointer;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.mode-pill:hover {
+  color: var(--primary);
+  background: rgba(91, 77, 240, 0.06);
+}
+
+.mode-pill.active {
+  background: var(--primary);
+  color: #ffffff;
+  box-shadow: 0 2px 8px rgba(91, 77, 240, 0.35);
+}
+
+.focus-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 14px;
+  border-radius: 30px;
+  border: 1px solid var(--border);
+  background: rgba(255, 255, 255, 0.92);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.04);
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--text-muted);
+  cursor: pointer;
+  pointer-events: auto;
+  transition: all 0.2s ease;
+}
+
+.focus-pill:hover {
+  border-color: var(--primary);
+  color: var(--primary);
+}
+
+.focus-pill.active {
+  background: rgba(0, 207, 160, 0.12);
+  border-color: rgba(0, 207, 160, 0.4);
+  color: #087b55;
+}
+
+/* ── CELLULAR MOVE CLOSER GUIDANCE BAR ── */
+.cell-move-guide-bar {
+  position: absolute;
+  bottom: 14px;
+  left: 14px;
+  right: 14px;
+  background: rgba(255, 255, 255, 0.94);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(91, 77, 240, 0.25);
+  border-radius: 16px;
+  padding: 12px 16px;
+  box-shadow: 0 6px 20px rgba(91, 77, 240, 0.12);
+  z-index: 10;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  animation: slideUpGuide 0.3s ease-out;
+}
+
+@keyframes slideUpGuide {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.cell-guide-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 12px;
+}
+
+.cell-guide-title {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--text);
+  font-size: 11px;
+}
+
+.pulse-indicator {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--primary);
+  box-shadow: 0 0 0 0 rgba(91, 77, 240, 0.6);
+  animation: guidePulse 1.8s infinite;
+}
+
+@keyframes guidePulse {
+  0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(91, 77, 240, 0.7); }
+  70% { transform: scale(1); box-shadow: 0 0 0 8px rgba(91, 77, 240, 0); }
+  100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(91, 77, 240, 0); }
+}
+
+.cell-guide-val {
+  font-weight: 800;
+  font-size: 11px;
+  color: var(--primary);
+  background: var(--primary-soft);
+  padding: 3px 8px;
+  border-radius: 12px;
+}
+
+.cell-guide-slider-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.slider-end-label {
+  font-size: 10px;
+  font-weight: 700;
+  color: var(--text-muted);
+  white-space: nowrap;
+}
+
+.cell-range-slider {
+  flex: 1;
+  accent-color: var(--primary);
+  cursor: ew-resize;
+  height: 6px;
+}
+
+/* ── DETAILS PANEL (RIGHT DRAWER) ── */
+.details-drawer {
+  width: 320px;
+  background: #ffffff;
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  padding: 18px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  flex-shrink: 0;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.02);
+  transition: width 0.3s cubic-bezier(0.4, 0, 0.2, 1), padding 0.3s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.25s ease;
+  position: relative;
+}
+
+.details-drawer.collapsed {
+  width: 0 !important;
+  min-width: 0 !important;
+  padding: 0 !important;
+  margin: 0 !important;
+  border: none !important;
+  opacity: 0 !important;
+  pointer-events: none !important;
+  overflow: hidden !important;
+}
+
+.btn-drawer-collapse {
+  background: #f8fafc;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 4px 10px;
+  height: 26px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+  font-size: 11px;
+  font-weight: 800;
+  color: var(--text-muted);
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.btn-drawer-collapse:hover {
+  background: var(--primary-soft);
+  color: var(--primary);
+  border-color: rgba(91, 77, 240, 0.3);
+}
+
+.btn-drawer-expand {
+  position: absolute;
+  top: 14px;
+  right: 14px;
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(91, 77, 240, 0.35);
+  box-shadow: 0 4px 16px rgba(91, 77, 240, 0.16);
+  border-radius: 24px;
+  padding: 8px 16px;
+  font-size: 12px;
+  font-weight: 800;
+  color: var(--primary);
+  cursor: pointer;
+  z-index: 15;
+  display: none;
+  align-items: center;
+  gap: 8px;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.btn-drawer-expand:hover {
+  background: var(--primary);
+  color: #ffffff;
+  transform: translateY(-1px);
+}
+
+.drawer-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-bottom: 1px solid var(--border);
+  padding-bottom: 10px;
+}
+
+.drawer-title {
+  font-size: 13px;
+  font-weight: 900;
+  color: var(--text);
+  letter-spacing: 0.5px;
+}
+
+/* ── COMPACT SIGNAL ADVISOR CARD (IN TOPOLOGY DRAWER) ── */
+.drawer-mini-advisor {
+  background: linear-gradient(135deg, rgba(91, 77, 240, 0.04), rgba(14, 165, 233, 0.04));
+  border: 1px solid rgba(91, 77, 240, 0.18);
+  border-radius: 14px;
+  padding: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.mini-adv-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.mini-adv-title {
+  font-size: 11px;
+  font-weight: 900;
+  color: var(--primary);
+  letter-spacing: 0.5px;
+}
+
+.mini-adv-pulse {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--green);
+  box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.6);
+  animation: guidePulse 1.8s infinite;
+}
+
+.mini-adv-badge {
+  font-size: 10px;
+  font-weight: 800;
+  color: var(--primary);
+  background: rgba(255, 255, 255, 0.85);
+  border: 1px solid rgba(91, 77, 240, 0.2);
+  padding: 2px 7px;
+  border-radius: 10px;
+}
+
+.mini-adv-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+}
+
+.mini-adv-stat {
+  background: #ffffff;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 8px 10px;
+  display: flex;
+  flex-direction: column;
+}
+
+.mini-adv-label {
+  font-size: 9px;
+  font-weight: 800;
+  color: var(--text-muted);
+  letter-spacing: 0.3px;
+}
+
+.mini-adv-val {
+  font-size: 14px;
+  font-weight: 900;
+  color: var(--text);
+  margin-top: 2px;
+}
+
+.mini-adv-sub {
+  font-size: 9.5px;
+  color: var(--text-muted);
+  margin-top: 1px;
+}
+
+.mini-adv-guidance {
+  font-size: 11px;
+  line-height: 1.45;
+  color: var(--text);
+  background: rgba(255, 255, 255, 0.7);
+  padding: 6px 8px;
+  border-radius: 8px;
+  border-left: 3px solid var(--primary);
+}
+
+.drawer-body {
+  font-size: 12px;
+  line-height: 1.6;
+}
+
+.coverage-box {
+  background: var(--primary-soft);
+  border: 1px solid rgba(91, 77, 240, 0.2);
+  border-radius: 14px;
+  padding: 12px;
+  margin-top: 10px;
+}
+
+.coverage-box h5 {
+  font-size: 11px;
+  font-weight: 800;
+  color: var(--primary);
+  margin-bottom: 6px;
+}
+
+/* ── SIGNAL ADVISOR CARD ── */
+.advisor-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 16px;
+}
+
+.advisor-card {
+  background: #ffffff;
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  padding: 22px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.card-label {
+  font-size: 11px;
+  font-weight: 900;
+  color: var(--text-muted);
+  letter-spacing: 0.5px;
+}
+
+.card-value {
+  font-size: 38px;
+  font-weight: 900;
+  color: var(--green);
+}
+
+.advisor-alert {
+  background: var(--green-soft);
+  border: 1px solid rgba(0, 196, 140, 0.3);
+  border-radius: 16px;
+  padding: 16px;
+  font-size: 13px;
+  font-weight: 700;
+  color: #087b55;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+/* ── DISTANCE TO COVERAGE AREA CARD ── */
+.distance-advice-card {
+  background: linear-gradient(135deg, #ffffff 0%, #faf8fe 100%);
+  border: 1.5px solid rgba(91, 77, 240, 0.25);
+  border-radius: 20px;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  box-shadow: 0 4px 18px rgba(91, 77, 240, 0.06);
+}
+
+/* ── DUAL WALKING ESTIMATOR (RANGE & MOVE CLOSER) ── */
+.dual-estimator-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 14px;
+}
+
+@media (max-width: 768px) {
+  .dual-estimator-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.estimator-pillar-card {
+  background: #ffffff;
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.02);
+  transition: all 0.2s ease;
+}
+
+.estimator-pillar-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.05);
+}
+
+.outward-card {
+  border-color: rgba(14, 165, 233, 0.35);
+  background: linear-gradient(180deg, #ffffff 0%, #f0f9ff 100%);
+}
+
+.inward-card {
+  border-color: rgba(91, 77, 240, 0.35);
+  background: linear-gradient(180deg, #ffffff 0%, #faf8fe 100%);
+}
+
+.pillar-tag {
+  font-size: 10px;
+  font-weight: 900;
+  letter-spacing: 0.6px;
+  color: var(--text-muted);
+}
+
+.outward-card .pillar-tag {
+  color: #0284c7;
+}
+
+.inward-card .pillar-tag {
+  color: var(--primary);
+}
+
+.pillar-main-val {
+  font-size: 28px;
+  font-weight: 900;
+  color: var(--text);
+  line-height: 1.1;
+}
+
+.outward-card .pillar-main-val {
+  color: #0369a1;
+}
+
+.inward-card .pillar-main-val {
+  color: var(--primary);
+}
+
+.pillar-sub {
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--text);
+}
+
+.pillar-progress-track {
+  width: 100%;
+  height: 8px;
+  background: rgba(14, 165, 233, 0.15);
+  border-radius: 10px;
+  overflow: hidden;
+  margin: 4px 0;
+}
+
+.pillar-progress-fill {
+  height: 100%;
+  background: linear-gradient(90deg, #0ea5e9, #10b981);
+  border-radius: 10px;
+  transition: width 0.4s ease;
+}
+
+.pillar-badge {
+  display: inline-block;
+  font-size: 11px;
+  font-weight: 800;
+  color: var(--primary);
+  background: var(--primary-soft);
+  padding: 4px 10px;
+  border-radius: 20px;
+  width: fit-content;
+}
+
+.pillar-detail {
+  font-size: 11.5px;
+  color: var(--text-muted);
+  line-height: 1.5;
+}
+
+/* ── RANGE SPECTRUM BAR ── */
+.range-spectrum-card {
+  background: #ffffff;
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  padding: 12px 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.spectrum-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.spectrum-bar {
+  position: relative;
+  height: 22px;
+  background: #e2e8f0;
+  border-radius: 8px;
+  display: flex;
+  overflow: hidden;
+}
+
+.spectrum-segment {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 9.5px;
+  font-weight: 800;
+  color: #ffffff;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+}
+
+.seg-core { flex: 3; background: #5b4df0; }
+.seg-strong { flex: 5; background: #10b981; }
+.seg-good { flex: 7; background: #0ea5e9; }
+.seg-fair { flex: 7; background: #f59e0b; }
+.seg-limit { flex: 8; background: #f43f5e; }
+
+.spectrum-marker {
+  position: absolute;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  font-size: 16px;
+  z-index: 5;
+  filter: drop-shadow(0 2px 4px rgba(0,0,0,0.4));
+  transition: left 0.4s ease;
+  pointer-events: none;
+}
+
+.dist-meter-banner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: var(--primary-soft);
+  border: 1px solid rgba(91, 77, 240, 0.2);
+  border-radius: 14px;
+  padding: 12px 16px;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.dist-meter-value {
+  font-size: 20px;
+  font-weight: 900;
+  color: var(--primary);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.dist-meter-target {
+  font-size: 11px;
+  font-weight: 800;
+  color: var(--text-muted);
+  margin-top: 4px;
+}
+
+.dist-steps-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 10px;
+  margin-top: 6px;
+}
+
+.step-card {
+  background: #ffffff;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 10px 14px;
+  font-size: 11px;
+  display: flex;
+  gap: 10px;
+  align-items: flex-start;
+}
+
+.step-icon {
+  font-size: 18px;
+  flex-shrink: 0;
+}
+
+/* ── TABLE STYLES (LIVE SCAN & DEVICES) ── */
+.data-table-card {
+  background: #ffffff;
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  overflow: hidden;
+}
+
+.data-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 12px;
+  text-align: left;
+}
+
+.data-table th {
+  background: #faf8fe;
+  color: var(--text-muted);
+  font-weight: 800;
+  padding: 12px 16px;
+  border-bottom: 1px solid var(--border);
+}
+
+.data-table td {
+  padding: 12px 16px;
+  border-bottom: 1px solid #f2eff9;
+  color: var(--text);
+  font-weight: 600;
+}
+
+.data-table tr:hover {
+  background: #f7f6fd;
+}
+
+/* ── MOBILE BOTTOM NAVIGATION ── */
+.mobile-nav {
+  display: none;
+  background: #ffffff;
+  border-top: 1px solid var(--border);
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 62px;
+  z-index: 200;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
+  align-items: center;
+  gap: 2px;
+  padding: 0 6px;
+}
+
+.mobile-nav::-webkit-scrollbar {
+  display: none;
+}
+
+.mobile-nav-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  min-width: 58px;
+  gap: 3px;
+  font-size: 10px;
+  font-weight: 700;
+  color: var(--text-muted);
+  cursor: pointer;
+  padding: 4px 6px;
+}
+
+.mobile-nav-item.active {
+  color: var(--primary);
+}
+
+.mobile-nav-item .nav-icon {
+  font-size: 18px;
+}
+
+/* ── RESPONSIVE MEDIA QUERIES ── */
+@media (max-width: 991px) {
+  .app-sidebar {
+    display: none;
+  }
+
+  .mobile-nav {
+    display: flex;
+  }
+
+  body {
+    padding-bottom: 60px;
+  }
+
+  .topology-workspace {
+    flex-direction: column;
+  }
+
+  .details-drawer {
+    width: 100%;
+  }
+
+  .canvas-container {
+    height: 420px;
+    min-height: 420px;
+    flex-shrink: 0;
+  }
+
+  .header-telemetry .hide-mobile {
+    display: none;
+  }
+}
+
+/* ============================================================
+   DESKTOP VS MOBILE: CELLULAR DATA RESTRICTION
+   Cellular data & tower guidance is ONLY available on mobile!
+   On desktop / PC, hide all cellular items completely.
+   ============================================================ */
+
+@media (min-width: 769px) {
+  /* Hide Cellular badge in desktop header */
+  #hdrCellularBadge {
+    display: none !important;
+  }
+
+  /* Hide Cellular & 5G tab from Desktop sidebar */
+  .app-sidebar .nav-item[data-tab="cellular"] {
+    display: none !important;
+  }
+
+  /* Hide Cellular Mode button in canvas top bar on desktop */
+  #btnModeCellular {
+    display: none !important;
+  }
+
+  /* Hide canvas mode-pill-group on desktop (Wi-Fi is the only mode) */
+  .canvas-mode-bar .mode-pill-group {
+    display: none !important;
+  }
+
+  /* Hide Cellular toggle in Signal Advisor on desktop */
+  #tab-advisor .mode-pill-group {
+    display: none !important;
+  }
+
+  /* Ensure Wi-Fi section is strictly shown on desktop advisor */
+  #advWifiSection {
+    display: flex !important;
+  }
+  #advCellularSection {
+    display: none !important;
+  }
+}
+
+@media (max-width: 768px) {
+  /* Cellular items visible on mobile */
+  #hdrCellularBadge {
+    display: inline-flex;
+  }
+
+  .canvas-mode-bar .mode-pill-group {
+    display: inline-flex !important;
+  }
+
+  #btnModeCellular {
+    display: inline-flex !important;
+  }
+
+  #tab-advisor .mode-pill-group {
+    display: inline-flex !important;
+  }
+}
+
+@media (max-width: 576px) {
+  .app-header {
+    padding: 8px 12px;
+    gap: 8px;
+  }
+
+  .brand-title {
+    font-size: 15px;
+  }
+
+  .brand-icon {
+    width: 28px;
+    height: 28px;
+    font-size: 15px;
+  }
+
+  .header-telemetry {
+    gap: 5px;
+  }
+
+  .badge {
+    padding: 3px 8px;
+    font-size: 10px;
+  }
+
+  .btn {
+    padding: 4px 8px;
+    font-size: 11px;
+  }
+
+  .canvas-container {
+    min-height: 400px;
+    height: 400px;
+  }
+
+  .canvas-mode-bar {
+    top: 8px;
+    left: 8px;
+    right: 8px;
+    gap: 6px;
+  }
+
+  .mode-pill-group {
+    padding: 3px;
+  }
+
+  .mode-pill {
+    padding: 5px 10px;
+    font-size: 11px;
+    gap: 4px;
+  }
+
+  .focus-pill {
+    padding: 6px 10px;
+    font-size: 11px;
+    gap: 4px;
+  }
+
+  .cell-move-guide-bar {
+    bottom: 8px;
+    left: 8px;
+    right: 8px;
+    padding: 10px 12px;
+    gap: 6px;
+  }
+
+  .cell-guide-title {
+    font-size: 10px;
+  }
+
+  .slider-end-label {
+    font-size: 9px;
+  }
+
+  .card-value {
+    font-size: 28px;
+  }
+}
+
+/* ── REFRESH BUTTON & CONTROLS ── */
+.btn-refresh-primary {
+  background: linear-gradient(135deg, #5B4DF0, #7B68EE);
+  color: #ffffff !important;
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  box-shadow: 0 3px 10px rgba(91, 77, 240, 0.35);
+  font-weight: 800;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 14px;
+  border-radius: 12px;
+  cursor: pointer;
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+  flex-shrink: 0;
+}
+
+.btn-refresh-primary:hover {
+  background: linear-gradient(135deg, #4738DB, #6854DB);
+  transform: translateY(-1px);
+  box-shadow: 0 5px 14px rgba(91, 77, 240, 0.45);
+}
+
+.btn-refresh-primary:active {
+  transform: scale(0.95);
+}
+
+.refresh-spinner-icon {
+  display: inline-block;
+  transition: transform 0.2s ease;
+}
+
+.refresh-spinner-icon.spinning,
+.adv-spin-icon.spinning {
+  animation: spinKeyframe 0.75s cubic-bezier(0.4, 0, 0.2, 1) infinite !important;
+}
+
+@keyframes spinKeyframe {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+/* ── SIGNAL METER BARS ── */
+.signal-meter-bar-container {
+  width: 100%;
+  height: 6px;
+  background: #ECECF6;
+  border-radius: 6px;
+  overflow: hidden;
+  margin-top: 8px;
+}
+
+.signal-meter-bar-fill {
+  height: 100%;
+  border-radius: 6px;
+  transition: width 0.4s ease, background 0.4s ease;
+}
+
+/* ── FLOATING TOAST NOTIFICATION ── */
+.waveium-toast {
+  position: fixed;
+  top: 18px;
+  left: 50%;
+  transform: translateX(-50%) translateY(-24px);
+  background: rgba(17, 20, 45, 0.94);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  color: #ffffff;
+  padding: 10px 22px;
+  border-radius: 30px;
+  font-size: 13px;
+  font-weight: 800;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.25);
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  z-index: 99999;
+  opacity: 0;
+  pointer-events: none;
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.waveium-toast.show {
+  transform: translateX(-50%) translateY(0);
+  opacity: 1;
+}
+
+/* ── HEATMAP ROOM CARDS GRID ── */
+.heatmap-cards-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 12px;
+}
+
+.heatmap-room-card {
+  background: var(--card-bg);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 14px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.02);
+}
+
+.heatmap-room-card:hover {
+  border-color: var(--primary);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(91, 77, 240, 0.08);
+}
+
+.heatmap-room-card.active {
+  border-color: var(--primary);
+  background: var(--primary-soft);
+}
+
+</style>
 </head>
 <body>
 
@@ -859,12 +2141,3658 @@
   </nav>
 
   <!-- Load Scripts -->
-  <script src="/js/radar.js"></script>
-  <script src="/js/cellular.js"></script>
-  <script src="/js/heatmap.js"></script>
-  <script src="/js/speedtest.js"></script>
-  <script src="/js/channels.js"></script>
-  <script src="/js/app.js"></script>
+  <script>
+// ==================== radar.js ====================
+/**
+ * WAVEIUM - HTML5 Canvas Topology Radar
+ * Supports both Wi-Fi Mode (Router & Devices) and Cellular Mode (Signal Tower & Move Closer).
+ *
+ * Special features:
+ * - Mobile Wi-Fi focus: Cleans up the small phone screen to show Router <-> This Device.
+ * - Cellular Tower Mode: Displays a Cell Base Station Tower at the center with RF beam sectors.
+ * - "Move Closer" dynamic guide: As cellular RSRP changes or improves, phone moves closer to the tower!
+ * - High-DPI Retina sharp rendering with setTransform.
+ */
+
+class WaveiumRadar {
+  constructor(canvasElement, onSelectCallback) {
+    this.canvas = canvasElement;
+    this.ctx = canvasElement.getContext('2d');
+    this.onSelect = onSelectCallback || (() => {});
+
+    // Modes: 'wifi' | 'cellular'
+    this.mode = 'wifi';
+    this.simplifiedMobileView = (window.innerWidth < 768);
+    this.simulatedRsrp = null;
+
+    // State
+    this.nodes = [];
+    this.edges = [];
+    this.wifi = {};
+    this.coverage = null;
+    this.localIp = null;
+    this.gatewayIp = null;
+
+    this.positions = {};
+    this.manualPositions = {};
+    this.selectedNodeId = null;
+    this.hoveredNodeId = null;
+    this.draggingNodeId = null;
+    this.dragOffset = { x: 0, y: 0 };
+
+    this.animTime = 0;
+    this.dpr = window.devicePixelRatio || 1;
+
+    // Sizing
+    this.width = 600;
+    this.height = 500;
+
+    // Setup Canvas Sizing & Events
+    this.setupResize();
+    this.setupEvents();
+    this.startLoop();
+  }
+
+  setMode(mode) {
+    if (mode === 'wifi' || mode === 'cellular') {
+      this.mode = mode;
+      this.recalculatePositions();
+      this.render();
+    }
+  }
+
+  toggleSimplifiedMobileView() {
+    this.simplifiedMobileView = !this.simplifiedMobileView;
+    this.recalculatePositions();
+    this.render();
+    return this.simplifiedMobileView;
+  }
+
+  setSimulatedRsrp(val) {
+    this.simulatedRsrp = val;
+    this.recalculatePositions();
+    this.render();
+  }
+
+  drawRoundRect(ctx, x, y, width, height, radius) {
+    if (typeof ctx.roundRect === 'function') {
+      ctx.roundRect(x, y, width, height, radius);
+      return;
+    }
+    if (width < 2 * radius) radius = width / 2;
+    if (height < 2 * radius) radius = height / 2;
+    ctx.moveTo(x + radius, y);
+    ctx.arcTo(x + width, y, x + width, y + height, radius);
+    ctx.arcTo(x + width, y + height, x, y + height, radius);
+    ctx.arcTo(x, y + height, x, y, radius);
+    ctx.arcTo(x, y, x + width, y, radius);
+    ctx.closePath();
+  }
+
+  setupResize() {
+    const resize = () => {
+      const parent = this.canvas.parentElement;
+      if (!parent) return;
+      const w = parent.clientWidth || 360;
+      const h = parent.clientHeight || 420;
+
+      this.dpr = window.devicePixelRatio || 1;
+      this.canvas.width = Math.round(w * this.dpr);
+      this.canvas.height = Math.round(h * this.dpr);
+      this.canvas.style.width = `${w}px`;
+      this.canvas.style.height = `${h}px`;
+
+      this.width = w;
+      this.height = h;
+
+      this.recalculatePositions();
+      this.render();
+    };
+
+    if (window.ResizeObserver && this.canvas.parentElement) {
+      const ro = new ResizeObserver(resize);
+      ro.observe(this.canvas.parentElement);
+    }
+    window.addEventListener('resize', resize);
+    setTimeout(resize, 10);
+    resize();
+  }
+
+  setupEvents() {
+    const getPos = (e) => {
+      const rect = this.canvas.getBoundingClientRect();
+      const clientX = e.touches ? e.touches[0].clientX : e.clientX;
+      const clientY = e.touches ? e.touches[0].clientY : e.clientY;
+      return {
+        x: clientX - rect.left,
+        y: clientY - rect.top
+      };
+    };
+
+    // Pointer Down (Mouse & Touch) - SELECTION ONLY, NO DRAGGING (STILL NODES)
+    const onDown = (e) => {
+      const pos = getPos(e);
+      const hit = this.hitTest(pos.x, pos.y);
+      if (hit) {
+        this.selectedNodeId = hit.id;
+        this.onSelect(hit);
+        if (e.cancelable && e.type.startsWith('touch')) {
+          e.preventDefault();
+        }
+      } else {
+        this.selectedNodeId = null;
+        this.onSelect(null);
+      }
+      this.render();
+    };
+
+    // Pointer Move - HOVER HIGHLIGHT ONLY (DEVICES REMAIN COMPLETELY STILL)
+    const onMove = (e) => {
+      const pos = getPos(e);
+      const hit = this.hitTest(pos.x, pos.y);
+      const newHover = hit ? hit.id : null;
+      if (newHover !== this.hoveredNodeId) {
+        this.hoveredNodeId = newHover;
+        this.canvas.style.cursor = hit ? 'pointer' : 'default';
+        this.render();
+      }
+    };
+
+    const onUp = () => {};
+
+    this.canvas.addEventListener('mousedown', onDown);
+    this.canvas.addEventListener('mousemove', onMove);
+    this.canvas.addEventListener('mouseleave', () => {
+      this.hoveredNodeId = null;
+      this.canvas.style.cursor = 'default';
+      this.render();
+    });
+
+    this.canvas.addEventListener('touchstart', onDown, { passive: true });
+  }
+
+  setData(data) {
+    this.nodes = (data.nodes && data.nodes.length > 0) ? [...data.nodes] : [];
+    this.edges = data.edges || [];
+    this.wifi = data.wifi || {};
+    this.coverage = data.coverage || null;
+    this.localIp = data.local_ip || null;
+    this.gatewayIp = data.gateway || null;
+    this.isScanning = !!data.is_scanning;
+
+    // Guarantee router is always present
+    let routerNode = this.nodes.find(n => n.role === 'router' || n.vertex_type === 'router' || (n.label && n.label.toLowerCase().includes('router')));
+    if (!routerNode) {
+      routerNode = {
+        id: this.gatewayIp || '192.168.1.1',
+        role: 'router',
+        label: 'Wi-Fi Gateway',
+        ip: this.gatewayIp || '192.168.1.1'
+      };
+      this.nodes.unshift(routerNode);
+    }
+
+    // Guarantee local device is always present
+    let localNode = this.nodes.find(n => n.is_local || n.ip === this.localIp);
+    if (!localNode) {
+      localNode = {
+        id: this.localIp || '192.168.1.12',
+        role: 'local_device',
+        is_local: true,
+        label: 'This Device',
+        ip: this.localIp || '192.168.1.12',
+        rssi: (this.wifi && this.wifi.rssi) || -52,
+        distance: (this.wifi && this.wifi.distance) || 1.8
+      };
+      this.nodes.push(localNode);
+    }
+
+    this.recalculatePositions();
+    this.render();
+  }
+
+  recalculatePositions() {
+    const parent = this.canvas.parentElement;
+    if (parent && parent.clientWidth > 0 && parent.clientHeight > 0) {
+      this.width = parent.clientWidth;
+      this.height = parent.clientHeight;
+    }
+    if (!this.width || !this.height) return;
+
+    const cx = this.width / 2;
+    const cy = this.height / 2;
+    const maxR = Math.min(this.width, this.height) * 0.46;
+
+    // ── CELLULAR MODE POSITIONING (TOWER & PHONE) ──
+    if (this.mode === 'cellular') {
+      this.positions['tower'] = { x: cx, y: cy };
+
+      // Current Cellular RSRP (simulated or live from cellularAdvisor)
+      const rsrp = this.simulatedRsrp != null
+        ? this.simulatedRsrp
+        : (window.cellularAdvisor?.currentData?.rsrp || -84);
+
+      // Distance from cell tower based on RSRP (-70 dBm close to tower, -115 dBm far away)
+      const norm = Math.max(0, Math.min(1, (-70 - rsrp) / 45));
+      const phoneR = maxR * (0.42 + 0.44 * norm);
+
+      // Place phone at 12 o'clock with subtle animated drift
+      const angle = -Math.PI / 2;
+      this.positions['this_device'] = {
+        x: cx + phoneR * Math.cos(angle),
+        y: cy + phoneR * Math.sin(angle)
+      };
+      return;
+    }
+
+    // ── WI-FI MODE POSITIONING ──
+    let routerNode = this.nodes.find(n => n.role === 'router' || n.vertex_type === 'router' || (n.label && n.label.toLowerCase().includes('router')));
+    if (!routerNode) {
+      routerNode = { id: this.gatewayIp || '192.168.1.1', role: 'router', label: 'Wi-Fi Gateway', ip: this.gatewayIp || '192.168.1.1' };
+      this.nodes.unshift(routerNode);
+    }
+    const routerId = routerNode.id;
+
+    this.positions[routerId] = { x: cx, y: cy };
+
+    // Discovered clients
+    let clientNodes = this.nodes.filter(n => n.id !== routerId);
+    if (clientNodes.length === 0) {
+      const localNode = {
+        id: this.localIp || '192.168.1.12',
+        role: 'local_device',
+        is_local: true,
+        label: 'This Device',
+        ip: this.localIp || '192.168.1.12',
+        rssi: (this.wifi && this.wifi.rssi) || -52,
+        distance: (this.wifi && this.wifi.distance) || 1.8
+      };
+      this.nodes.push(localNode);
+      clientNodes = [localNode];
+    }
+
+    // Identify local device
+    let localIdx = clientNodes.findIndex(n => n.is_local || n.ip === this.localIp);
+    if (localIdx > 0) {
+      const [local] = clientNodes.splice(localIdx, 1);
+      clientNodes.unshift(local);
+    }
+
+    // IF SIMPLIFIED VIEW (DEFAULT ON MOBILE): ONLY SHOW THIS DEVICE & ROUTER
+    if (this.simplifiedMobileView && clientNodes.length > 0) {
+      const local = clientNodes[0];
+      let radialFactor = 0.62;
+      if (local.rssi != null) {
+        const rVal = parseFloat(local.rssi);
+        const rNorm = Math.max(0, Math.min(1, (-35 - rVal) / 45));
+        radialFactor = 0.52 + 0.24 * rNorm;
+      }
+      const devR = maxR * radialFactor;
+      this.positions[local.id] = {
+        x: cx,
+        y: Math.max(48, cy - devR)
+      };
+      return;
+    }
+
+    // DESKTOP OR FULL DISCOVERY VIEW: Radial layout for all nodes
+    const count = clientNodes.length;
+    if (count > 0) {
+      const baseDeviceR = maxR * 0.72;
+      const step = (2 * Math.PI) / count;
+      const startAngle = -Math.PI / 2;
+
+      clientNodes.forEach((node, idx) => {
+        let radialFactor = 0.95;
+        if (node.rssi != null) {
+          const rVal = parseFloat(node.rssi);
+          const rNorm = Math.max(0, Math.min(1, (-40 - rVal) / 45));
+          radialFactor = 0.86 + 0.20 * rNorm;
+        }
+
+        if (count >= 6) {
+          radialFactor += (idx % 2 === 0 ? 0.06 : -0.06);
+        }
+
+        const angle = startAngle + idx * step;
+        const devR = baseDeviceR * radialFactor;
+
+        const x = cx + devR * Math.cos(angle);
+        const y = cy + devR * Math.sin(angle);
+
+        this.positions[node.id] = {
+          x: Math.max(50, Math.min(this.width - 50, x)),
+          y: Math.max(50, Math.min(this.height - 50, y))
+        };
+      });
+    }
+  }
+
+  hitTest(x, y) {
+    if (this.mode === 'cellular') {
+      const p = this.positions['this_device'];
+      if (p) {
+        const dx = x - p.x;
+        const dy = y - p.y;
+        if (dx * dx + dy * dy <= 30 * 30) return { id: 'this_device', label: 'This Smartphone', type: 'Cellular Mobile' };
+      }
+      const t = this.positions['tower'];
+      if (t) {
+        const dx = x - t.x;
+        const dy = y - t.y;
+        if (dx * dx + dy * dy <= 40 * 40) return { id: 'tower', label: 'Cellular Base Station', role: 'router' };
+      }
+      return null;
+    }
+
+    for (let i = this.nodes.length - 1; i >= 0; i--) {
+      const node = this.nodes[i];
+      const pos = this.positions[node.id];
+      if (!pos) continue;
+
+      const r = (node.role === 'router' || node.vertex_type === 'router') ? 44 : 32;
+      const dx = x - pos.x;
+      const dy = y - pos.y;
+      if (dx * dx + dy * dy <= r * r) {
+        return node;
+      }
+    }
+    return null;
+  }
+
+  startLoop() {
+    let lastTime = performance.now();
+    const tick = () => {
+      const now = performance.now();
+      this.animTime += (now - lastTime) * 0.001;
+      lastTime = now;
+      this.render();
+    };
+
+    const loop = () => {
+      tick();
+      requestAnimationFrame(loop);
+    };
+    requestAnimationFrame(loop);
+    setInterval(tick, 50);
+  }
+
+  render() {
+    const ctx = this.ctx;
+    const w = this.width;
+    const h = this.height;
+    if (!w || !h || !ctx) return;
+
+    try {
+      ctx.setTransform(this.dpr, 0, 0, this.dpr, 0, 0);
+      ctx.clearRect(0, 0, w, h);
+
+      const cx = w / 2;
+      const cy = h / 2;
+      const maxR = Math.min(w, h) * 0.46;
+
+      // 1. Draw Technical Dot Grid & Corner Framing
+      this.drawBackground(ctx, w, h);
+
+      if (this.mode === 'cellular') {
+        // ── CELLULAR MODE RENDERING ──
+        this.renderCellularMode(ctx, cx, cy, maxR, w, h);
+      } else {
+        // ── WI-FI MODE RENDERING ──
+        this.renderWifiMode(ctx, cx, cy, maxR, w, h);
+      }
+
+      ctx.setTransform(1, 0, 0, 1, 0, 0);
+    } catch (err) {
+      console.error('Radar render error:', err);
+      try { ctx.setTransform(1, 0, 0, 1, 0, 0); } catch (_) {}
+    }
+  }
+
+  renderWifiMode(ctx, cx, cy, maxR, w, h) {
+    // 2. Concentric Signal Coverage Zones (Inner Circle Core < 3m, Strong < 8m, etc.)
+    this.drawSignalZones(ctx, cx, cy, maxR, w);
+
+    // 3. Draw Links & Animated Particles
+    this.drawEdges(ctx, cx, cy);
+
+    // 4. Draw Device Nodes & Router
+    this.drawNodes(ctx);
+
+    // 5. Draw HUD Overlays
+    this.drawHud(ctx, w, h);
+  }
+
+  renderCellularMode(ctx, cx, cy, maxR, w, h) {
+    const rsrp = this.simulatedRsrp != null
+      ? this.simulatedRsrp
+      : (window.cellularAdvisor?.currentData?.rsrp || -84);
+
+    const towerPos = this.positions['tower'] || { x: cx, y: cy };
+    const phonePos = this.positions['this_device'] || { x: cx, y: cy - maxR * 0.6 };
+
+    // 1. Concentric Cellular RF Sectors
+    this.drawCellularSectors(ctx, cx, cy, maxR, w);
+
+    // 2. RF Beam Link & Animated "Move Closer" Chevrons
+    this.drawCellularBeam(ctx, towerPos, phonePos, rsrp);
+
+    // 3. Center Cellular Base Station Tower
+    this.drawCellularTower(ctx, towerPos.x, towerPos.y);
+
+    // 4. Phone Node
+    this.drawCellularPhone(ctx, phonePos.x, phonePos.y, rsrp);
+
+    // 5. Dynamic "MOVE CLOSER" Banner & Distance Tag
+    this.drawMoveCloserBanner(ctx, w, h, rsrp, phonePos);
+  }
+
+  drawCellularSectors(ctx, cx, cy, maxR, w) {
+    const sectors = [
+      { frac: 1.00, col: '#f43f5e', fill: 0.03, stroke: 0.25, label: 'Cell Edge ~3km' },
+      { frac: 0.74, col: '#f59e0b', fill: 0.05, stroke: 0.32, label: 'Urban Macro ~1.5km' },
+      { frac: 0.50, col: '#0ea5e9', fill: 0.07, stroke: 0.40, label: 'Primary Sector ~800m' },
+      { frac: 0.28, col: '#5b4df0', fill: 0.12, stroke: 0.65, label: 'Core Beam < 300m' } // Inner High-Power Beam!
+    ];
+
+    sectors.forEach(s => {
+      const r = maxR * s.frac;
+
+      ctx.beginPath();
+      ctx.arc(cx, cy, r, 0, Math.PI * 2);
+      ctx.fillStyle = this.hexToRgba(s.col, s.fill);
+      ctx.fill();
+
+      ctx.beginPath();
+      ctx.setLineDash(s.frac === 0.28 ? [4, 4] : [5, 6]);
+      ctx.strokeStyle = this.hexToRgba(s.col, s.stroke);
+      ctx.lineWidth = s.frac === 0.28 ? 1.8 : 1.2;
+      ctx.arc(cx, cy, r, 0, Math.PI * 2);
+      ctx.stroke();
+      ctx.setLineDash([]);
+
+      // Label
+      if (w < 500) {
+        if (s.frac === 0.28 || s.frac === 1.00) {
+          ctx.fillStyle = this.hexToRgba(s.col, 0.90);
+          ctx.font = '700 9px -apple-system, sans-serif';
+          ctx.textAlign = 'center';
+          ctx.fillText(s.label, cx, cy - r + 12);
+        }
+      } else {
+        ctx.fillStyle = this.hexToRgba(s.col, 0.85);
+        ctx.font = '700 10px -apple-system, sans-serif';
+        ctx.textAlign = 'center';
+        ctx.fillText(s.label, cx + r, cy - 6);
+      }
+    });
+
+    // Inner Core Beam accent ring
+    const innerR = maxR * 0.28;
+    ctx.beginPath();
+    ctx.setLineDash([3, 4]);
+    ctx.strokeStyle = 'rgba(91, 77, 240, 0.7)';
+    ctx.lineWidth = 1.6;
+    ctx.arc(cx, cy, innerR, 0, Math.PI * 2);
+    ctx.stroke();
+    ctx.setLineDash([]);
+  }
+
+  drawCellularBeam(ctx, tower, phone, rsrp) {
+    // Carrier RF Connection Line
+    ctx.beginPath();
+    ctx.moveTo(tower.x, tower.y);
+    ctx.lineTo(phone.x, phone.y);
+
+    const isStrong = rsrp >= -85;
+    const isModerate = rsrp >= -100;
+    const strokeColor = isStrong ? 'rgba(0, 196, 140, 0.85)' : (isModerate ? 'rgba(245, 158, 11, 0.85)' : 'rgba(244, 63, 94, 0.85)');
+
+    ctx.strokeStyle = strokeColor;
+    ctx.lineWidth = 2.4;
+    ctx.stroke();
+
+    // Animated RF Waves / Chevrons directing user: "Move Closer"
+    const dir = -1; // Towards tower
+    const pulseCount = 4;
+    for (let i = 0; i < pulseCount; i++) {
+      const t = (this.animTime * 0.7 + i / pulseCount) % 1.0;
+      // Interpolate from phone towards tower
+      const curX = phone.x + (tower.x - phone.x) * t;
+      const curY = phone.y + (tower.y - phone.y) * t;
+
+      ctx.save();
+      ctx.translate(curX, curY);
+      // Small directional chevron pointing at tower
+      ctx.beginPath();
+      ctx.moveTo(-6, 6);
+      ctx.lineTo(0, 0);
+      ctx.lineTo(6, 6);
+      ctx.strokeStyle = strokeColor;
+      ctx.lineWidth = 2.0;
+      ctx.stroke();
+      ctx.restore();
+    }
+
+    // Distance-to-move pill badge on the RF beam
+    const midX = (tower.x + phone.x) / 2 + 38;
+    const midY = (tower.y + phone.y) / 2;
+
+    let distBadgeText = '';
+    if (rsrp >= -78) {
+      distBadgeText = '✓ Optimal (0m)';
+    } else if (rsrp >= -88) {
+      const m = Math.max(2, Math.round(2 + (-78 - rsrp) * 0.35));
+      distBadgeText = `Move ~${m}m ➜`;
+    } else if (rsrp >= -102) {
+      const m = Math.max(5, Math.round(5 + (-88 - rsrp) * 0.45));
+      distBadgeText = `Move ~${m}m ➜`;
+    } else {
+      const m = Math.max(12, Math.round(12 + Math.min(10, (-102 - rsrp) * 0.6)));
+      distBadgeText = `Move ~${m}m ➜`;
+    }
+
+    ctx.save();
+    ctx.font = '700 9px -apple-system, sans-serif';
+    const tw = ctx.measureText(distBadgeText).width;
+    const bw = tw + 14;
+    const bh = 18;
+    ctx.fillStyle = isStrong ? '#e8fbf5' : (isModerate ? '#fffbeb' : '#fef2f2');
+    ctx.strokeStyle = strokeColor;
+    ctx.lineWidth = 1.2;
+    ctx.beginPath();
+    this.drawRoundRect(ctx, midX - bw / 2, midY - bh / 2, bw, bh, 9);
+    ctx.fill();
+    ctx.stroke();
+
+    ctx.fillStyle = isStrong ? '#087b55' : (isModerate ? '#b45309' : '#b91c1c');
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    ctx.fillText(distBadgeText, midX, midY);
+    ctx.restore();
+  }
+
+  drawCellularTower(ctx, x, y) {
+    const r = 38;
+
+    // Expanding beacon pulse rings
+    const pulse = (this.animTime * 1.5) % 1.0;
+    const pulseR = r + pulse * 28;
+    ctx.beginPath();
+    ctx.arc(x, y, pulseR, 0, Math.PI * 2);
+    ctx.strokeStyle = `rgba(91, 77, 240, ${0.4 * (1 - pulse)})`;
+    ctx.lineWidth = 2;
+    ctx.stroke();
+
+    // Tower base disc
+    ctx.beginPath();
+    ctx.arc(x, y, r, 0, Math.PI * 2);
+    ctx.fillStyle = '#ffffff';
+    ctx.fill();
+    ctx.lineWidth = 3;
+    ctx.strokeStyle = '#5b4df0';
+    ctx.stroke();
+
+    // Tower Mast Structure & Antenna Icon
+    ctx.font = '22px -apple-system, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    ctx.fillText('🗼', x, y);
+
+    // Blinking Aircraft Beacon Light on Tower
+    const beaconOn = Math.sin(this.animTime * 8) > 0;
+    ctx.beginPath();
+    ctx.arc(x, y - 16, 3, 0, Math.PI * 2);
+    ctx.fillStyle = beaconOn ? '#ef4444' : '#7f1d1d';
+    ctx.shadowColor = '#ef4444';
+    ctx.shadowBlur = beaconOn ? 10 : 0;
+    ctx.fill();
+    ctx.shadowBlur = 0;
+
+    // Label Below
+    this.drawNodeLabel(ctx, x, y + r + 8, 'CELLULAR BASE TOWER', 'Carrier 5G / 4G Site', '#5b4df0', '#737791');
+  }
+
+  drawCellularPhone(ctx, x, y, rsrp) {
+    const r = 28;
+
+    // Glowing halo
+    const isStrong = rsrp >= -85;
+    const haloColor = isStrong ? 'rgba(0, 196, 140, ' : (rsrp >= -100 ? 'rgba(245, 158, 11, ' : 'rgba(244, 63, 94, ');
+    const pulse = 1 + 0.12 * Math.sin(this.animTime * 4);
+
+    ctx.beginPath();
+    ctx.arc(x, y, (r + 10) * pulse, 0, Math.PI * 2);
+    ctx.fillStyle = `${haloColor}0.25)`;
+    ctx.fill();
+
+    // Node disc
+    ctx.beginPath();
+    ctx.arc(x, y, r, 0, Math.PI * 2);
+    ctx.fillStyle = isStrong ? '#e8fbf5' : '#ffffff';
+    ctx.fill();
+    ctx.lineWidth = 3;
+    ctx.strokeStyle = isStrong ? '#00c48c' : (rsrp >= -100 ? '#f59e0b' : '#f43f5e');
+    ctx.stroke();
+
+    // Phone icon
+    ctx.font = '18px -apple-system, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    ctx.fillText('📱', x, y);
+
+    // "THIS PHONE" Pill Badge
+    ctx.save();
+    const badgeText = 'THIS SMARTPHONE';
+    ctx.font = '800 8px -apple-system, sans-serif';
+    const tw = ctx.measureText(badgeText).width;
+    ctx.fillStyle = isStrong ? '#00c48c' : '#5b4df0';
+    ctx.beginPath();
+    this.drawRoundRect(ctx, x - (tw + 12) / 2, y - r - 13, tw + 12, 14, 7);
+    ctx.fill();
+    ctx.fillStyle = '#ffffff';
+    ctx.fillText(badgeText, x, y - r - 6);
+    ctx.restore();
+
+    // Label Below
+    const gen = window.cellularAdvisor?.currentData?.generation || '4G LTE';
+    this.drawNodeLabel(ctx, x, y + r + 6, `${gen} Connected`, `${rsrp} dBm (RSRP)`, '#11142d', isStrong ? '#087b55' : '#b45309');
+  }
+
+  drawMoveCloserBanner(ctx, w, h, rsrp, phonePos) {
+    ctx.save();
+    let bannerText = '';
+    let subText = '';
+    let bg = '';
+    let fg = '';
+
+    if (rsrp >= -78) {
+      bannerText = '✓ OPTIMAL SPOT: IN CORE BEAM (0m)';
+      subText = 'Direct carrier line-of-sight · High SINR throughput';
+      bg = '#e8fbf5';
+      fg = '#087b55';
+    } else if (rsrp >= -88) {
+      const m = Math.max(2, Math.round(2 + (-78 - rsrp) * 0.35));
+      const s = Math.round(m * 1.5);
+      bannerText = `🚶 MOVE ~${m}m CLOSER (${s} STEPS) TO WINDOW`;
+      subText = `Target: Core Beam Zone (-75 dBm) · Gain +${Math.round(-75 - rsrp)} dBm`;
+      bg = '#e8fbf5';
+      fg = '#087b55';
+    } else if (rsrp >= -102) {
+      const m = Math.max(5, Math.round(5 + (-88 - rsrp) * 0.45));
+      const s = Math.round(m * 1.5);
+      bannerText = `🚶 MOVE ~${m}m CLOSER (${s} STEPS) TO WINDOW`;
+      subText = `Target: Primary Sector Zone (-85 dBm) · Gain +${Math.round(-85 - rsrp)} dBm`;
+      bg = '#fffbeb';
+      fg = '#b45309';
+    } else {
+      const m = Math.max(12, Math.round(12 + Math.min(10, (-102 - rsrp) * 0.6)));
+      const s = Math.round(m * 1.5);
+      bannerText = `⚠️ CELL EDGE: MOVE ~${m}m CLOSER (${s} STEPS)`;
+      subText = `High wall attenuation. Step to window/exit for +${Math.round(-90 - rsrp)} dBm`;
+      bg = '#fef2f2';
+      fg = '#b91c1c';
+    }
+
+    const boxW = Math.min(w - 24, 320);
+    const boxH = 40;
+    const boxX = (w - boxW) / 2;
+    const boxY = w < 500 ? 50 : 54;
+
+    ctx.fillStyle = bg;
+    ctx.strokeStyle = fg;
+    ctx.lineWidth = 1.2;
+    ctx.beginPath();
+    this.drawRoundRect(ctx, boxX, boxY, boxW, boxH, 12);
+    ctx.fill();
+    ctx.stroke();
+
+    ctx.fillStyle = fg;
+    ctx.font = '800 11px -apple-system, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    ctx.fillText(bannerText, w / 2, boxY + 14);
+
+    ctx.font = '600 9px -apple-system, sans-serif';
+    ctx.fillText(subText, w / 2, boxY + 27);
+
+    ctx.restore();
+  }
+
+  drawBackground(ctx, w, h) {
+    ctx.fillStyle = 'rgba(91, 77, 240, 0.12)';
+    const spacing = 32;
+    for (let x = 20; x < w - 10; x += spacing) {
+      for (let y = 20; y < h - 10; y += spacing) {
+        ctx.beginPath();
+        ctx.arc(x, y, 1.2, 0, Math.PI * 2);
+        ctx.fill();
+      }
+    }
+
+    ctx.strokeStyle = 'rgba(91, 77, 240, 0.35)';
+    ctx.lineWidth = 1.6;
+    const bracketSize = 14;
+
+    ctx.beginPath();
+    ctx.moveTo(16, 16 + bracketSize);
+    ctx.lineTo(16, 16);
+    ctx.lineTo(16 + bracketSize, 16);
+    ctx.stroke();
+
+    ctx.beginPath();
+    ctx.moveTo(w - 16 - bracketSize, 16);
+    ctx.lineTo(w - 16, 16);
+    ctx.lineTo(w - 16, 16 + bracketSize);
+    ctx.stroke();
+
+    ctx.beginPath();
+    ctx.moveTo(16, h - 16 - bracketSize);
+    ctx.lineTo(16, h - 16);
+    ctx.lineTo(16 + bracketSize, h - 16);
+    ctx.stroke();
+
+    ctx.beginPath();
+    ctx.moveTo(w - 16 - bracketSize, h - 16);
+    ctx.lineTo(w - 16, h - 16);
+    ctx.lineTo(w - 16, h - 16 - bracketSize);
+    ctx.stroke();
+  }
+
+  drawSignalZones(ctx, cx, cy, maxR, w) {
+    w = w || this.width || 600;
+    const zones = [
+      { frac: 1.00, col: '#f43f5e', fill: 0.04, stroke: 0.28, label: 'Limit ~30m' },
+      { frac: 0.82, col: '#f59e0b', fill: 0.05, stroke: 0.32, label: 'Fair ~22m' },
+      { frac: 0.64, col: '#0ea5e9', fill: 0.06, stroke: 0.38, label: 'Good ~15m' },
+      { frac: 0.44, col: '#10b981', fill: 0.08, stroke: 0.45, label: 'Strong ~8m' },
+      { frac: 0.24, col: '#5b4df0', fill: 0.12, stroke: 0.60, label: 'Core < 3m' }
+    ];
+
+    zones.forEach(z => {
+      const r = maxR * z.frac;
+
+      ctx.beginPath();
+      ctx.arc(cx, cy, r, 0, Math.PI * 2);
+      ctx.fillStyle = this.hexToRgba(z.col, z.fill);
+      ctx.fill();
+
+      ctx.beginPath();
+      ctx.setLineDash(z.frac === 0.24 ? [4, 4] : [5, 6]);
+      ctx.strokeStyle = this.hexToRgba(z.col, z.stroke);
+      ctx.lineWidth = z.frac === 0.24 ? 1.8 : 1.2;
+      ctx.arc(cx, cy, r, 0, Math.PI * 2);
+      ctx.stroke();
+      ctx.setLineDash([]);
+
+      // Position zone badge along the top-left radial arc (-128 deg) in wide-open space, away from center and nodes
+      const angle = -128 * (Math.PI / 180);
+      const lx = cx + r * Math.cos(angle);
+      const ly = cy + r * Math.sin(angle);
+
+      // Render badge on desktop or essential zones on mobile
+      if (w >= 500 || z.frac === 0.24 || z.frac === 0.64 || z.frac === 1.00) {
+        ctx.save();
+        ctx.font = '700 9.5px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
+        const textMetrics = ctx.measureText(z.label);
+        const tw = textMetrics.width;
+        const th = 16;
+        const px = lx - tw / 2 - 6;
+        const py = ly - th / 2;
+
+        // Dark pill background so text never clashes with nodes or lines
+        ctx.fillStyle = 'rgba(15, 23, 42, 0.88)';
+        ctx.beginPath();
+        if (ctx.roundRect) {
+          ctx.roundRect(px, py, tw + 12, th, 8);
+        } else {
+          ctx.rect(px, py, tw + 12, th);
+        }
+        ctx.fill();
+
+        // Subtle border matching zone color
+        ctx.strokeStyle = this.hexToRgba(z.col, 0.70);
+        ctx.lineWidth = 1;
+        ctx.stroke();
+
+        // Text inside pill
+        ctx.fillStyle = z.col;
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'middle';
+        ctx.fillText(z.label, lx, ly + 0.5);
+        ctx.restore();
+      }
+    });
+
+    const innerR = maxR * 0.24;
+    ctx.beginPath();
+    ctx.setLineDash([3, 4]);
+    ctx.strokeStyle = 'rgba(91, 77, 240, 0.65)';
+    ctx.lineWidth = 1.6;
+    ctx.arc(cx, cy, innerR, 0, Math.PI * 2);
+    ctx.stroke();
+    ctx.setLineDash([]);
+  }
+
+  drawEdges(ctx, cx, cy) {
+    const routerPos = { x: cx, y: cy };
+    const isMobile = this.width < 600;
+
+    this.nodes.forEach(node => {
+      if (node.role === 'router' || node.vertex_type === 'router') return;
+      const isLocal = node.is_local || node.ip === this.localIp;
+
+      // In simplified view, skip other devices
+      if (this.simplifiedMobileView && !isLocal) return;
+
+      const pos = this.positions[node.id];
+      if (!pos) return;
+
+      ctx.beginPath();
+      ctx.moveTo(routerPos.x, routerPos.y);
+      ctx.lineTo(pos.x, pos.y);
+
+      if (isLocal) {
+        ctx.strokeStyle = 'rgba(0, 196, 140, 0.85)';
+        ctx.lineWidth = 2.5;
+        ctx.stroke();
+
+        const particleCount = 3;
+        for (let i = 0; i < particleCount; i++) {
+          const t = (this.animTime * 0.8 + i / particleCount) % 1.0;
+          const px = routerPos.x + (pos.x - routerPos.x) * t;
+          const py = routerPos.y + (pos.y - routerPos.y) * t;
+
+          ctx.beginPath();
+          ctx.arc(px, py, 3.5, 0, Math.PI * 2);
+          ctx.fillStyle = '#00c48c';
+          ctx.shadowColor = '#00c48c';
+          ctx.shadowBlur = 8;
+          ctx.fill();
+          ctx.shadowBlur = 0;
+        }
+      } else {
+        ctx.strokeStyle = 'rgba(91, 77, 240, 0.35)';
+        ctx.lineWidth = 1.4;
+        ctx.setLineDash([4, 4]);
+        ctx.stroke();
+        ctx.setLineDash([]);
+      }
+
+      let badgeX = (routerPos.x + pos.x) / 2;
+      let badgeY = (routerPos.y + pos.y) / 2;
+      if (isLocal && Math.abs(pos.x - routerPos.x) < 25) {
+        badgeX += 34; // Offset to side of vertical link
+      }
+
+      const dist = node.distance != null ? `${node.distance}m` : (node.rssi ? `${node.rssi}dBm` : '');
+      if (dist) {
+        ctx.save();
+        ctx.fillStyle = isLocal ? '#e8fbf5' : '#ffffff';
+        ctx.strokeStyle = isLocal ? 'rgba(0, 196, 140, 0.4)' : 'rgba(91, 77, 240, 0.2)';
+        ctx.lineWidth = 1;
+        ctx.beginPath();
+        this.drawRoundRect(ctx, badgeX - 22, badgeY - 9, 44, 18, 9);
+        ctx.fill();
+        ctx.stroke();
+
+        ctx.fillStyle = isLocal ? '#087b55' : '#5b4df0';
+        ctx.font = '700 9px -apple-system, sans-serif';
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'middle';
+        ctx.fillText(dist, badgeX, badgeY);
+        ctx.restore();
+      }
+    });
+  }
+
+  drawNodes(ctx) {
+    const isMobile = this.width < 600;
+
+    this.nodes.forEach(node => {
+      const isRouter = node.role === 'router' || node.vertex_type === 'router' || (node.label && node.label.toLowerCase().includes('router'));
+      const isLocal = node.is_local || node.ip === this.localIp;
+
+      // On simplified view, only draw Router and This Device!
+      if (this.simplifiedMobileView && !isRouter && !isLocal) return;
+
+      const pos = this.positions[node.id];
+      if (!pos) return;
+
+      const isSelected = this.selectedNodeId === node.id;
+      const isHovered = this.hoveredNodeId === node.id;
+
+      if (isRouter) {
+        this.drawRouterNode(ctx, pos.x, pos.y, node, isSelected, isHovered);
+      } else {
+        this.drawClientNode(ctx, pos.x, pos.y, node, isLocal, isSelected, isHovered);
+      }
+    });
+  }
+
+  drawRouterNode(ctx, x, y, node, isSelected, isHovered) {
+    const r = 36;
+    const pulse = 1 + 0.08 * Math.sin(this.animTime * 3);
+    const grad = ctx.createRadialGradient(x, y, r * 0.6, x, y, r * 1.5 * pulse);
+    grad.addColorStop(0, 'rgba(91, 77, 240, 0.35)');
+    grad.addColorStop(1, 'rgba(91, 77, 240, 0.0)');
+    ctx.beginPath();
+    ctx.arc(x, y, r * 1.5 * pulse, 0, Math.PI * 2);
+    ctx.fillStyle = grad;
+    ctx.fill();
+
+    ctx.beginPath();
+    ctx.arc(x, y, r, 0, Math.PI * 2);
+    ctx.fillStyle = '#ffffff';
+    ctx.fill();
+    ctx.lineWidth = isSelected ? 3.5 : (isHovered ? 3 : 2.5);
+    ctx.strokeStyle = '#5b4df0';
+    ctx.stroke();
+
+    ctx.fillStyle = '#5b4df0';
+    ctx.beginPath();
+    this.drawRoundRect(ctx, x - 16, y - 6, 32, 16, 4);
+    ctx.fill();
+
+    ctx.lineWidth = 2.2;
+    ctx.strokeStyle = '#5b4df0';
+    ctx.beginPath();
+    ctx.moveTo(x - 10, y - 6);
+    ctx.lineTo(x - 12, y - 16);
+    ctx.moveTo(x + 10, y - 6);
+    ctx.lineTo(x + 12, y - 16);
+    ctx.stroke();
+
+    const ledOn = Math.sin(this.animTime * 6) > 0;
+    ctx.fillStyle = ledOn ? '#00c48c' : '#22c55e';
+    ctx.beginPath();
+    ctx.arc(x - 8, y + 2, 2.2, 0, Math.PI * 2);
+    ctx.arc(x, y + 2, 2.2, 0, Math.PI * 2);
+    ctx.arc(x + 8, y + 2, 2.2, 0, Math.PI * 2);
+    ctx.fill();
+
+    const title = 'ROUTER / GATEWAY';
+    const sub = node.ip || this.gatewayIp || '192.168.1.1';
+    this.drawNodeLabel(ctx, x, y + r + 8, title, sub, '#5b4df0', '#737791');
+  }
+
+  drawClientNode(ctx, x, y, node, isLocal, isSelected, isHovered) {
+    const r = 26;
+
+    if (isLocal || isSelected) {
+      const haloColor = isLocal ? 'rgba(0, 196, 140, ' : 'rgba(91, 77, 240, ';
+      const haloPulse = 1 + 0.12 * Math.sin(this.animTime * 4);
+      ctx.beginPath();
+      ctx.arc(x, y, (r + 10) * haloPulse, 0, Math.PI * 2);
+      ctx.fillStyle = `${haloColor}0.25)`;
+      ctx.fill();
+    }
+
+    ctx.beginPath();
+    ctx.arc(x, y, r, 0, Math.PI * 2);
+    ctx.fillStyle = isLocal ? '#e8fbf5' : '#ffffff';
+    ctx.fill();
+
+    ctx.lineWidth = isLocal ? 3 : (isSelected ? 2.5 : 1.8);
+    ctx.strokeStyle = isLocal ? '#00c48c' : (isSelected ? '#5b4df0' : '#d2ccff');
+    ctx.stroke();
+
+    ctx.font = '16px -apple-system, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    const icon = this.getDeviceEmoji(node);
+    ctx.fillText(icon, x, y);
+
+    if (isLocal) {
+      ctx.save();
+      const badgeText = this.width < 500 ? 'THIS PHONE' : 'THIS DEVICE';
+      ctx.font = '800 8px -apple-system, sans-serif';
+      const tw = ctx.measureText(badgeText).width;
+      ctx.fillStyle = '#00c48c';
+      ctx.beginPath();
+      this.drawRoundRect(ctx, x - (tw + 10) / 2, y - r - 12, tw + 10, 14, 7);
+      ctx.fill();
+      ctx.fillStyle = '#ffffff';
+      ctx.fillText(badgeText, x, y - r - 5);
+      ctx.restore();
+    }
+
+    const name = node.label || node.hostname || (isLocal ? 'This Device' : 'Client');
+    const ip = node.ip || 'Unknown IP';
+    const color = isLocal ? '#087b55' : '#11142d';
+    this.drawNodeLabel(ctx, x, y + r + 6, name, ip, color, '#737791');
+  }
+
+  drawNodeLabel(ctx, x, y, title, subtitle, titleColor, subColor) {
+    ctx.save();
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'top';
+
+    ctx.font = '700 11px -apple-system, sans-serif';
+    ctx.fillStyle = titleColor;
+    const truncatedTitle = title.length > 18 ? title.slice(0, 16) + '…' : title;
+    ctx.fillText(truncatedTitle, x, y);
+
+    ctx.font = '600 10px -apple-system, sans-serif';
+    ctx.fillStyle = subColor;
+    ctx.fillText(subtitle, x, y + 13);
+    ctx.restore();
+  }
+
+  drawHud(ctx, w, h) {
+    const ssid = this.wifi.ssid || 'Wi-Fi Network';
+    const band = this.wifi.band || '5 GHz';
+    const count = this.nodes.length;
+
+    ctx.save();
+
+    if (w < 500) {
+      ctx.font = '700 11px -apple-system, sans-serif';
+      ctx.fillStyle = 'rgba(255, 255, 255, 0.94)';
+      ctx.strokeStyle = 'rgba(91, 77, 240, 0.18)';
+      ctx.lineWidth = 1;
+
+      ctx.beginPath();
+      this.drawRoundRect(ctx, 12, 12, 160, 32, 10);
+      ctx.fill();
+      ctx.stroke();
+
+      ctx.beginPath();
+      ctx.arc(24, 28, 3.5, 0, Math.PI * 2);
+      ctx.fillStyle = '#00c48c';
+      ctx.fill();
+
+      ctx.fillStyle = '#11142d';
+      ctx.textAlign = 'left';
+      ctx.textBaseline = 'middle';
+      const cleanSsid = ssid.length > 13 ? ssid.slice(0, 11) + '…' : ssid;
+      ctx.fillText(cleanSsid, 34, 23);
+
+      ctx.font = '600 9px -apple-system, sans-serif';
+      ctx.fillStyle = '#737791';
+      ctx.fillText(`${band}  •  Router Focus`, 34, 34);
+
+      ctx.restore();
+      return;
+    }
+
+    const hudY = 56;
+    ctx.font = '700 11px -apple-system, sans-serif';
+    ctx.fillStyle = 'rgba(255, 255, 255, 0.92)';
+    ctx.strokeStyle = 'rgba(91, 77, 240, 0.18)';
+    ctx.lineWidth = 1;
+
+    ctx.beginPath();
+    this.drawRoundRect(ctx, 18, hudY, 170, 36, 12);
+    ctx.fill();
+    ctx.stroke();
+
+    ctx.beginPath();
+    ctx.arc(32, hudY + 18, 4, 0, Math.PI * 2);
+    ctx.fillStyle = '#00c48c';
+    ctx.fill();
+
+    ctx.fillStyle = '#11142d';
+    ctx.textAlign = 'left';
+    ctx.textBaseline = 'middle';
+    ctx.fillText(ssid, 44, hudY + 12);
+
+    ctx.font = '600 10px -apple-system, sans-serif';
+    ctx.fillStyle = '#737791';
+    ctx.fillText(`${band}  •  ${count} Devices`, 44, hudY + 25);
+
+    if (this.coverage) {
+      const maxDist = this.coverage.max_distance || this.coverage.max_range_meters || 30;
+      const rangeText = `Est. Coverage: ~${maxDist}m`;
+      const rw = ctx.measureText(rangeText).width + 24;
+      ctx.beginPath();
+      ctx.fillStyle = 'rgba(255, 255, 255, 0.92)';
+      this.drawRoundRect(ctx, w - rw - 18, 18, rw, 36, 12);
+      ctx.fill();
+      ctx.stroke();
+
+      ctx.fillStyle = '#5b4df0';
+      ctx.font = '700 11px -apple-system, sans-serif';
+      ctx.textAlign = 'right';
+      ctx.fillText(rangeText, w - 30, 31);
+
+      ctx.font = '600 10px -apple-system, sans-serif';
+      ctx.fillStyle = '#10b981';
+      ctx.fillText('📡 Radial RF Propagation', w - 30, 44);
+    }
+
+    ctx.restore();
+  }
+
+  getDeviceEmoji(node) {
+    const txt = `${node.label || ''} ${node.type || ''} ${node.vendor || ''}`.toLowerCase();
+    if (txt.includes('phone') || txt.includes('iphone') || txt.includes('android') || txt.includes('galaxy')) return '📱';
+    if (txt.includes('laptop') || txt.includes('macbook') || txt.includes('thinkpad')) return '💻';
+    if (txt.includes('pc') || txt.includes('desktop') || txt.includes('computer')) return '🖥️';
+    if (txt.includes('printer')) return '🖨️';
+    if (txt.includes('tv') || txt.includes('roku') || txt.includes('chromecast') || txt.includes('firetv')) return '📺';
+    if (txt.includes('tablet') || txt.includes('ipad')) return '📱';
+    if (txt.includes('server') || txt.includes('nas')) return '🖧';
+    return '📡';
+  }
+
+  hexToRgba(hex, alpha) {
+    hex = hex.replace('#', '');
+    if (hex.length === 3) {
+      hex = hex.split('').map(c => c + c).join('');
+    }
+    const r = parseInt(hex.substring(0, 2), 16);
+    const g = parseInt(hex.substring(2, 4), 16);
+    const b = parseInt(hex.substring(4, 6), 16);
+    return `rgba(${r}, ${g}, ${b}, ${alpha})`;
+  }
+}
+
+// Export to window
+window.WaveiumRadar = WaveiumRadar;
+
+</script>
+  <script>
+// ==================== cellular.js ====================
+/**
+ * WAVEIUM - Mobile Cellular & Carrier Data Signal Advisor
+ * Scans mobile data/cellular link quality via W3C Network Information API
+ * and active micro-probes. Estimates 3GPP RSRP (dBm), signal bars, carrier
+ * generation (5G / 4G LTE / 3G), and provides indoor walking guidance.
+ */
+
+class WaveiumCellularAdvisor {
+  constructor() {
+    this.connection = navigator.connection || navigator.mozConnection || navigator.webkitConnection || null;
+    this.samples = [];
+    this.maxSamples = 30; // 30 seconds trace
+    this.isWalkTesting = true;
+    this.latencyHistory = [];
+    this.currentData = {
+      generation: '4G LTE',
+      type: 'cellular',
+      effectiveType: '4g',
+      downlink: 25.0,
+      rtt: 35,
+      jitter: 4,
+      rsrp: -84,
+      bars: 4,
+      quality: 'Good',
+      saveData: false,
+      lastProbe: Date.now()
+    };
+
+    this.init();
+  }
+
+  init() {
+    this.bindConnectionEvents();
+    this.setupCanvas();
+    this.startProbing();
+  }
+
+  bindConnectionEvents() {
+    if (this.connection) {
+      this.connection.addEventListener('change', () => {
+        this.updateFromNavigator();
+      });
+      this.updateFromNavigator();
+    }
+  }
+
+  updateFromNavigator() {
+    if (!this.connection) return;
+
+    const c = this.connection;
+    const eff = (c.effectiveType || '4g').toLowerCase();
+    const dl = c.downlink != null ? parseFloat(c.downlink) : 25.0;
+    const rtt = c.rtt != null ? parseInt(c.rtt, 10) : 40;
+
+    let gen = '4G LTE';
+    if (eff === '5g' || (eff === '4g' && dl >= 40 && rtt <= 30)) {
+      gen = '5G NR';
+    } else if (eff === '4g') {
+      gen = '4G LTE-A';
+    } else if (eff === '3g') {
+      gen = '3G HSPA+';
+    } else {
+      gen = '2G EDGE';
+    }
+
+    this.currentData.generation = gen;
+    this.currentData.effectiveType = eff;
+    this.currentData.downlink = dl;
+    this.currentData.saveData = !!c.saveData;
+    this.currentData.type = c.type || 'cellular';
+  }
+
+  async probeLatency() {
+    const t0 = performance.now();
+    try {
+      // Micro-probe to server ping endpoint with cache busting
+      const res = await fetch(`/api/ping?_t=${Date.now()}`, { cache: 'no-store' });
+      if (res.ok) {
+        const t1 = performance.now();
+        const measuredRtt = Math.max(5, Math.round(t1 - t0));
+        this.latencyHistory.push(measuredRtt);
+        if (this.latencyHistory.length > 10) this.latencyHistory.shift();
+
+        // Calculate jitter (mean absolute deviation)
+        let jitter = 2;
+        if (this.latencyHistory.length >= 3) {
+          let diffSum = 0;
+          for (let i = 1; i < this.latencyHistory.length; i++) {
+            diffSum += Math.abs(this.latencyHistory[i] - this.latencyHistory[i - 1]);
+          }
+          jitter = Math.round(diffSum / (this.latencyHistory.length - 1));
+        }
+
+        this.currentData.rtt = measuredRtt;
+        this.currentData.jitter = jitter;
+      }
+    } catch (_) {
+      // Offline or network switch
+      if (this.connection && this.connection.rtt) {
+        this.currentData.rtt = this.connection.rtt;
+      }
+    }
+
+    this.calculateSignalEstimate();
+    this.recordSample();
+    this.renderUI();
+  }
+
+  calculateSignalEstimate() {
+    const dl = this.currentData.downlink || 10;
+    const rtt = this.currentData.rtt || 45;
+    const gen = this.currentData.generation;
+
+    // Estimate 3GPP RSRP (Reference Signal Received Power in dBm)
+    // Strong signals: -70 to -85 dBm. Weak signals: -105 to -120 dBm.
+    let baseRsrp = -112;
+
+    // Downlink factor contribution (+5 to +25 dB)
+    const dlFactor = Math.min(26, Math.sqrt(Math.max(0.5, dl)) * 4.8);
+
+    // Latency factor contribution (lower RTT -> higher power proximity)
+    const rttFactor = Math.max(0, Math.min(20, (120 - rtt) * 0.18));
+
+    // Generation bonus
+    let genBonus = 0;
+    if (gen.includes('5G')) genBonus = 4;
+    else if (gen.includes('3G')) genBonus = -6;
+    else if (gen.includes('2G')) genBonus = -14;
+
+    const estimatedRsrp = Math.round(Math.min(-68, Math.max(-122, baseRsrp + dlFactor + rttFactor + genBonus)));
+    this.currentData.rsrp = estimatedRsrp;
+
+    // Map RSRP to standard 5 Signal Bars
+    let bars = 4;
+    let quality = 'Good';
+
+    if (estimatedRsrp >= -80) {
+      bars = 5;
+      quality = 'Excellent';
+    } else if (estimatedRsrp >= -90) {
+      bars = 4;
+      quality = 'Good';
+    } else if (estimatedRsrp >= -100) {
+      bars = 3;
+      quality = 'Fair';
+    } else if (estimatedRsrp >= -110) {
+      bars = 2;
+      quality = 'Poor';
+    } else {
+      bars = 1;
+      quality = 'Critical';
+    }
+
+    this.currentData.bars = bars;
+    this.currentData.quality = quality;
+    this.currentData.coverageGuidance = this.calculateCoverageDistance(estimatedRsrp);
+  }
+
+  calculateCoverageDistance(rsrp) {
+    // Computes physical distance in meters to move towards exterior window or higher ground
+    // to reach the next higher 3GPP cellular coverage tier.
+    if (rsrp >= -78) {
+      return {
+        distanceMeters: 0,
+        steps: 0,
+        targetZone: 'Core Beam Zone (< 300m)',
+        targetRsrp: -75,
+        expectedGain: '0 dBm (Optimal)',
+        actionSummary: '✓ In Optimal Coverage Zone',
+        directionAdvice: 'You are in direct carrier line of sight with minimum path loss. Keep your phone in this area for max bandwidth.'
+      };
+    } else if (rsrp >= -88) {
+      const meters = Math.max(2, Math.round(2 + (-78 - rsrp) * 0.35));
+      return {
+        distanceMeters: meters,
+        steps: Math.round(meters * 1.5),
+        targetZone: 'Core Beam Zone (-75 dBm)',
+        targetRsrp: -75,
+        expectedGain: `+${Math.round(-75 - rsrp)} dBm boost`,
+        actionSummary: `Move ~${meters} meters closer to window`,
+        directionAdvice: `Move approximately ${meters} meters (${Math.round(meters * 1.5)} steps) closer towards the exterior window or balcony to enter the Core Beam coverage area.`
+      };
+    } else if (rsrp >= -102) {
+      const meters = Math.max(5, Math.round(5 + (-88 - rsrp) * 0.45));
+      return {
+        distanceMeters: meters,
+        steps: Math.round(meters * 1.5),
+        targetZone: 'Primary Sector Zone (-85 dBm)',
+        targetRsrp: -85,
+        expectedGain: `+${Math.round(-85 - rsrp)} dBm boost`,
+        actionSummary: `Move ~${meters} meters towards exterior wall`,
+        directionAdvice: `Move approximately ${meters} meters (${Math.round(meters * 1.5)} steps) towards the nearest window or exterior door to climb out of interior wall attenuation.`
+      };
+    } else {
+      const meters = Math.max(12, Math.round(12 + Math.min(10, (-102 - rsrp) * 0.6)));
+      return {
+        distanceMeters: meters,
+        steps: Math.round(meters * 1.5),
+        targetZone: 'Usable Carrier Sector (-90 dBm)',
+        targetRsrp: -90,
+        expectedGain: `+${Math.round(-90 - rsrp)} dBm boost`,
+        actionSummary: `Move ~${meters} meters towards open area`,
+        directionAdvice: `Move approximately ${meters} meters (${Math.round(meters * 1.5)} steps) towards an open window, upper floor, or building exit to re-establish a reliable carrier connection.`
+      };
+    }
+  }
+
+  recordSample() {
+    this.samples.push({
+      time: Date.now(),
+      rsrp: this.currentData.rsrp,
+      rtt: this.currentData.rtt,
+      downlink: this.currentData.downlink,
+      bars: this.currentData.bars
+    });
+
+    if (this.samples.length > this.maxSamples) {
+      this.samples.shift();
+    }
+  }
+
+  startProbing() {
+    this.probeLatency();
+    setInterval(() => {
+      this.probeLatency();
+    }, 1500);
+  }
+
+  setupCanvas() {
+    const canvas = document.getElementById('cellWalkCanvas');
+    if (!canvas) return;
+
+    const resize = () => {
+      const parent = canvas.parentElement;
+      if (!parent) return;
+      const w = parent.clientWidth || 320;
+      const h = 180;
+      const dpr = window.devicePixelRatio || 1;
+      canvas.width = Math.round(w * dpr);
+      canvas.height = Math.round(h * dpr);
+      canvas.style.width = `${w}px`;
+      canvas.style.height = `${h}px`;
+      this.renderWalkChart();
+    };
+
+    window.addEventListener('resize', resize);
+    setTimeout(resize, 20);
+  }
+
+  renderUI() {
+    const d = this.currentData;
+
+    // Header cellular badge if present
+    const hdrCell = document.getElementById('hdrCellularBadge');
+    if (hdrCell) {
+      hdrCell.innerHTML = `<span>📶</span> <span>${d.generation} (${d.bars}/5)</span>`;
+      hdrCell.style.display = (window.innerWidth <= 768) ? 'inline-flex' : 'none';
+    }
+
+    // 1. KPI: Signal Strength & Bars
+    const elRsrp = document.getElementById('cellRsrp');
+    if (elRsrp) elRsrp.textContent = `${d.rsrp} dBm`;
+
+    const elQuality = document.getElementById('cellQuality');
+    if (elQuality) {
+      elQuality.textContent = `${d.quality} Signal (${d.bars} of 5 Bars)`;
+      elQuality.style.color = d.bars >= 4 ? 'var(--green)' : (d.bars === 3 ? 'var(--amber)' : 'var(--red)');
+    }
+
+    // 2. Render 5 Signal Bars Graphic
+    this.renderSignalBars(d.bars);
+
+    // 3. KPI: Generation
+    const elGen = document.getElementById('cellGen');
+    if (elGen) elGen.textContent = d.generation;
+
+    const elDataSaver = document.getElementById('cellDataSaver');
+    if (elDataSaver) elDataSaver.textContent = d.saveData ? 'Data Saver: ON' : 'Data Saver: OFF';
+
+    // 4. KPI: Downlink
+    const elDownlink = document.getElementById('cellDownlink');
+    if (elDownlink) elDownlink.textContent = `${d.downlink} Mbps`;
+
+    // 5. KPI: Latency & Jitter
+    const elRtt = document.getElementById('cellRtt');
+    if (elRtt) elRtt.textContent = `${d.rtt} ms`;
+
+    const elJitter = document.getElementById('cellJitter');
+    if (elJitter) elJitter.textContent = `Jitter: ±${d.jitter} ms`;
+
+    // 6. Distance to Coverage Area metrics (for both Cellular & Advisor tabs)
+    const g = d.coverageGuidance || this.calculateCoverageDistance(d.rsrp);
+    
+    const elDistVal = document.getElementById('cellAdvDistVal');
+    if (elDistVal) {
+      elDistVal.textContent = g.distanceMeters === 0 ? '0 m (In Core Beam)' : `~${g.distanceMeters} meters`;
+    }
+
+    const elStepsVal = document.getElementById('cellAdvStepsVal');
+    if (elStepsVal) {
+      elStepsVal.textContent = g.distanceMeters === 0 ? 'Optimal Line of Sight' : `approx. ${g.steps} steps towards window`;
+    }
+
+    const elTargetZone = document.getElementById('cellAdvTargetZone');
+    if (elTargetZone) {
+      elTargetZone.textContent = g.targetZone;
+    }
+
+    const elGain = document.getElementById('cellAdvGain');
+    if (elGain) {
+      elGain.textContent = g.expectedGain;
+    }
+
+    const elWalkAdvice = document.getElementById('cellAdvWalkingAdvice');
+    if (elWalkAdvice) {
+      elWalkAdvice.textContent = g.directionAdvice;
+    }
+
+    const elActionSum = document.getElementById('cellAdvActionSummary');
+    if (elActionSum) {
+      elActionSum.textContent = g.actionSummary;
+    }
+
+    const elAdvRsrp = document.getElementById('cellAdvRsrpVal');
+    if (elAdvRsrp) {
+      elAdvRsrp.textContent = `${d.rsrp} dBm`;
+    }
+
+    const elAdvQuality = document.getElementById('cellAdvQualityVal');
+    if (elAdvQuality) {
+      elAdvQuality.textContent = `${d.quality} Signal (${d.bars} of 5 Bars)`;
+      elAdvQuality.style.color = d.bars >= 4 ? 'var(--green)' : (d.bars === 3 ? 'var(--amber)' : 'var(--red)');
+    }
+
+    const elAdvBw = document.getElementById('cellAdvBwVal');
+    if (elAdvBw) {
+      elAdvBw.textContent = `${d.downlink} Mbps`;
+    }
+
+    // Cellular Advisor Signal Bar Fill
+    const elCellBar = document.getElementById('cellAdvSignalBarFill');
+    if (elCellBar) {
+      const cellNorm = Math.max(0, Math.min(100, Math.round(((d.rsrp - (-120)) / 55) * 100)));
+      elCellBar.style.width = `${cellNorm}%`;
+      elCellBar.style.background = cellNorm >= 65 ? 'var(--green)' : (cellNorm >= 40 ? 'var(--amber)' : 'var(--red)');
+    }
+
+    // Carrier Generation & SINR
+    const elAdvGen = document.getElementById('cellAdvGenVal');
+    if (elAdvGen) {
+      elAdvGen.textContent = d.generation;
+    }
+
+    const elAdvSinr = document.getElementById('cellAdvSinrVal');
+    if (elAdvSinr) {
+      const estSinr = Math.max(2, Math.min(28, Math.round(18 + (d.rsrp + 85) * 0.4)));
+      elAdvSinr.textContent = `Est. SINR: ${estSinr} dB · ${estSinr >= 14 ? 'Clean Sector' : 'Moderate Noise'}`;
+    }
+
+    // 7. Advisor Narrative Box
+    this.renderAdvisorNarrative(d, g);
+
+    // 8. Update Chart
+    this.renderWalkChart();
+  }
+
+  renderSignalBars(activeBars) {
+    const container = document.getElementById('cellSignalBars');
+    if (!container) return;
+
+    const heights = [8, 14, 20, 26, 32];
+    const colors = activeBars >= 4 ? '#00c48c' : (activeBars === 3 ? '#f59e0b' : '#f43f5e');
+
+    container.innerHTML = heights.map((h, idx) => {
+      const isLit = (idx + 1) <= activeBars;
+      const bg = isLit ? colors : 'rgba(115, 119, 145, 0.2)';
+      return `
+        <div style="
+          width: 7px;
+          height: ${h}px;
+          background: ${bg};
+          border-radius: 3px;
+          transition: all 0.3s;
+        "></div>
+      `;
+    }).join('');
+  }
+
+  renderAdvisorNarrative(d, g) {
+    const box = document.getElementById('cellAdvisorBox');
+    if (!box) return;
+
+    g = g || d.coverageGuidance || this.calculateCoverageDistance(d.rsrp);
+
+    let title = '';
+    let body = '';
+    let bg = '';
+    let fg = '';
+
+    const distMeterHtml = `
+      <div style="
+        background: rgba(255, 255, 255, 0.7);
+        border: 1px solid rgba(0, 0, 0, 0.08);
+        border-radius: 12px;
+        padding: 10px 14px;
+        margin: 8px 0;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        flex-wrap: wrap;
+        gap: 8px;
+      ">
+        <div style="font-weight: 800; font-size: 13px;">
+          <span>🚶 <strong>HOW MUCH FURTHER TO MOVE:</strong></span>
+          <span style="color:var(--primary); font-size: 15px; margin-left: 6px;">${g.actionSummary}</span>
+        </div>
+        <div style="font-size: 11px; font-weight: 700; opacity: 0.9;">
+          Target: <strong>${g.targetZone}</strong> (${g.expectedGain})
+        </div>
+      </div>
+    `;
+
+    if (d.bars >= 4) {
+      bg = 'var(--green-soft)';
+      fg = '#087b55';
+      title = `🟢 Optimal ${d.generation} Reception Active (${d.rsrp} dBm)`;
+      body = `
+        ${distMeterHtml}
+        Your smartphone is receiving strong reference signal power from the nearest cellular base station.
+        <ul style="margin: 6px 0 0 16px; font-weight: 600; line-height: 1.6;">
+          <li><strong>Walking Advice:</strong> ${g.directionAdvice}</li>
+          <li><strong>Throughput:</strong> High-speed streaming, tethering, and HD VoLTE calling are fully supported.</li>
+          <li><strong>Battery Impact:</strong> Low transmitter power (+5 to +10 dBm) saves smartphone battery.</li>
+        </ul>
+      `;
+    } else if (d.bars === 3) {
+      bg = '#fffbeb';
+      fg = '#b45309';
+      title = `🟡 Moderate ${d.generation} Reception (${d.rsrp} dBm)`;
+      body = `
+        ${distMeterHtml}
+        Experiencing indoor RF attenuation from drywall or intermediate partition rooms.
+        <ul style="margin: 6px 0 0 16px; font-weight: 600; line-height: 1.6;">
+          <li><strong>Walking Guidance:</strong> ${g.directionAdvice}</li>
+          <li><strong>Expected Benefit:</strong> Gain <strong>${g.expectedGain}</strong> and reduce latency jitter.</li>
+          <li><strong>Wi-Fi Handover:</strong> If local Wi-Fi is available, switching to Wi-Fi Calling (VoWiFi) will offer lower latency and preserve battery.</li>
+        </ul>
+      `;
+    } else {
+      bg = '#fef2f2';
+      fg = '#b91c1c';
+      title = `🔴 Weak Cellular Boundary Signal (${d.rsrp} dBm - ${d.rtt}ms RTT)`;
+      body = `
+        ${distMeterHtml}
+        Severe carrier signal degradation detected near the cell edge or deep indoors.
+        <ul style="margin: 6px 0 0 16px; font-weight: 600; line-height: 1.6;">
+          <li><strong>Immediate Action:</strong> ${g.directionAdvice}</li>
+          <li><strong>RF Amplifier Warning:</strong> Phone modem is boosting TX power to maximum (+23 dBm), causing increased battery drain.</li>
+          <li><strong>Alternative:</strong> Connect to Waveium local Wi-Fi immediately for reliable connectivity.</li>
+        </ul>
+      `;
+    }
+
+    box.style.background = bg;
+    box.style.color = fg;
+    box.innerHTML = `
+      <div style="font-size: 14px; font-weight: 900; margin-bottom: 4px;">${title}</div>
+      <div style="font-size: 12px;">${body}</div>
+    `;
+  }
+
+  renderWalkChart() {
+    const canvas = document.getElementById('cellWalkCanvas');
+    if (!canvas || this.samples.length < 2) return;
+
+    const ctx = canvas.getContext('2d');
+    const dpr = window.devicePixelRatio || 1;
+    const w = canvas.width / dpr;
+    const h = canvas.height / dpr;
+
+    ctx.save();
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    ctx.clearRect(0, 0, w, h);
+
+    // Padding
+    const padL = 40;
+    const padR = 14;
+    const padT = 18;
+    const padB = 24;
+    const plotW = w - padL - padR;
+    const plotH = h - padT - padB;
+
+    // Grid lines for RSRP (-120 dBm to -70 dBm)
+    const minRsrp = -120;
+    const maxRsrp = -70;
+    const steps = [-70, -85, -100, -115];
+
+    ctx.strokeStyle = '#f0edf8';
+    ctx.lineWidth = 1;
+    ctx.fillStyle = '#8b8da8';
+    ctx.font = '600 9px -apple-system, sans-serif';
+    ctx.textAlign = 'right';
+    ctx.textBaseline = 'middle';
+
+    steps.forEach(val => {
+      const y = padT + (1 - (val - minRsrp) / (maxRsrp - minRsrp)) * plotH;
+      ctx.beginPath();
+      ctx.moveTo(padL, y);
+      ctx.lineTo(w - padR, y);
+      ctx.stroke();
+      ctx.fillText(`${val}dBm`, padL - 6, y);
+    });
+
+    // Plot RSRP line
+    ctx.beginPath();
+    this.samples.forEach((s, idx) => {
+      const x = padL + (idx / (this.maxSamples - 1)) * plotW;
+      const y = padT + (1 - (s.rsrp - minRsrp) / (maxRsrp - minRsrp)) * plotH;
+      if (idx === 0) ctx.moveTo(x, y);
+      else ctx.lineTo(x, y);
+    });
+
+    // Gradient fill under curve
+    ctx.strokeStyle = '#5b4df0';
+    ctx.lineWidth = 2.4;
+    ctx.stroke();
+
+    // Data points & active head
+    const lastSample = this.samples[this.samples.length - 1];
+    const lastX = padL + ((this.samples.length - 1) / (this.maxSamples - 1)) * plotW;
+    const lastY = padT + (1 - (lastSample.rsrp - minRsrp) / (maxRsrp - minRsrp)) * plotH;
+
+    ctx.beginPath();
+    ctx.arc(lastX, lastY, 5, 0, Math.PI * 2);
+    ctx.fillStyle = '#00c48c';
+    ctx.shadowColor = '#00c48c';
+    ctx.shadowBlur = 8;
+    ctx.fill();
+    ctx.shadowBlur = 0;
+
+    // Label at bottom
+    ctx.fillStyle = '#737791';
+    ctx.textAlign = 'center';
+    ctx.fillText('← Earlier (Walk Path)                Current Room / Spot →', padL + plotW / 2, h - 6);
+
+    ctx.restore();
+  }
+
+  resetWalkTest() {
+    this.samples = [];
+    this.probeLatency();
+  }
+}
+
+// Export to window
+window.WaveiumCellularAdvisor = WaveiumCellularAdvisor;
+
+</script>
+  <script>
+// ==================== heatmap.js ====================
+/**
+ * WAVEIUM - Room-by-Room Wi-Fi Signal Heatmap
+ * Maps signal strength, attenuation, and dead zones across home/office rooms.
+ */
+
+class WaveiumHeatmap {
+  constructor(canvasElement, containerElement) {
+    this.canvas = canvasElement;
+    this.ctx = canvasElement.getContext('2d');
+    this.container = containerElement;
+
+    this.defaultRooms = [
+      { id: 'living_room', name: 'Living Room', emoji: '🛋️', x: 0.35, y: 0.40, rssi: -48, isRouter: true },
+      { id: 'master_bedroom', name: 'Master Bedroom', emoji: '🛏️', x: 0.72, y: 0.28, rssi: -62, isRouter: false },
+      { id: 'home_office', name: 'Home Office', emoji: '💻', x: 0.32, y: 0.75, rssi: -55, isRouter: false },
+      { id: 'kitchen', name: 'Kitchen', emoji: '🍳', x: 0.74, y: 0.65, rssi: -72, isRouter: false },
+      { id: 'balcony', name: 'Balcony / Garden', emoji: '🌿', x: 0.88, y: 0.88, rssi: -82, isRouter: false }
+    ];
+
+    this.rooms = this.loadRooms();
+    this.selectedRoomId = 'living_room';
+    this.dpr = window.devicePixelRatio || 1;
+    this.width = 600;
+    this.height = 420;
+
+    this.setupResize();
+    this.setupEvents();
+    this.render();
+    this.renderCards();
+  }
+
+  loadRooms() {
+    try {
+      const saved = localStorage.getItem('waveium_heatmap_rooms');
+      if (saved) return JSON.parse(saved);
+    } catch (_) {}
+    return JSON.parse(JSON.stringify(this.defaultRooms));
+  }
+
+  saveRooms() {
+    try {
+      localStorage.setItem('waveium_heatmap_rooms', JSON.stringify(this.rooms));
+    } catch (_) {}
+    this.render();
+    this.renderCards();
+  }
+
+  resetDefaults() {
+    this.rooms = JSON.parse(JSON.stringify(this.defaultRooms));
+    this.saveRooms();
+  }
+
+  setupResize() {
+    const resize = () => {
+      const parent = this.canvas.parentElement;
+      if (!parent) return;
+      const w = parent.clientWidth || 550;
+      const h = Math.max(380, Math.min(500, Math.round(w * 0.65)));
+
+      this.dpr = window.devicePixelRatio || 1;
+      this.canvas.width = Math.round(w * this.dpr);
+      this.canvas.height = Math.round(h * this.dpr);
+      this.canvas.style.width = `${w}px`;
+      this.canvas.style.height = `${h}px`;
+
+      this.width = w;
+      this.height = h;
+      this.render();
+    };
+
+    window.addEventListener('resize', resize);
+    setTimeout(resize, 30);
+  }
+
+  setupEvents() {
+    const getPos = (e) => {
+      const rect = this.canvas.getBoundingClientRect();
+      const clientX = e.touches ? e.touches[0].clientX : e.clientX;
+      const clientY = e.touches ? e.touches[0].clientY : e.clientY;
+      return {
+        x: (clientX - rect.left) / this.width,
+        y: (clientY - rect.top) / this.height
+      };
+    };
+
+    const onDown = (e) => {
+      const pos = getPos(e);
+      let closest = null;
+      let minD = 0.08;
+
+      this.rooms.forEach(r => {
+        const d = Math.hypot(r.x - pos.x, r.y - pos.y);
+        if (d < minD) {
+          minD = d;
+          closest = r;
+        }
+      });
+
+      if (closest) {
+        this.selectedRoomId = closest.id;
+        const selector = document.getElementById('heatmapRoomSelect');
+        if (selector) selector.value = closest.id;
+        this.render();
+        this.renderCards();
+      }
+    };
+
+    this.canvas.addEventListener('mousedown', onDown);
+    this.canvas.addEventListener('touchstart', onDown, { passive: true });
+  }
+
+  sampleCurrentRoom(liveWifi) {
+    const rssi = (liveWifi && liveWifi.rssi) ? liveWifi.rssi : -54;
+    let room = this.rooms.find(r => r.id === this.selectedRoomId);
+
+    if (!room) {
+      room = {
+        id: this.selectedRoomId,
+        name: this.selectedRoomId.replace(/_/g, ' '),
+        emoji: '📍',
+        x: 0.5,
+        y: 0.5,
+        isRouter: false
+      };
+      this.rooms.push(room);
+    }
+
+    room.rssi = rssi;
+    room.lastSampled = new Date().toLocaleTimeString();
+    room.linkRate = (liveWifi && liveWifi.receive_rate) ? liveWifi.receive_rate : 1201;
+
+    this.saveRooms();
+    return room;
+  }
+
+  getSignalColor(rssi, alpha = 1.0) {
+    if (rssi >= -55) return `rgba(0, 196, 140, ${alpha})`;    // Excellent Green
+    if (rssi >= -67) return `rgba(14, 165, 233, ${alpha})`;   // Good Sky Blue
+    if (rssi >= -75) return `rgba(245, 158, 11, ${alpha})`;   // Fair Amber
+    if (rssi >= -82) return `rgba(249, 115, 22, ${alpha})`;   // Weak Orange
+    return `rgba(239, 68, 68, ${alpha})`;                     // Dead Zone Red
+  }
+
+  getSignalCategory(rssi) {
+    if (rssi >= -55) return { grade: 'EXCELLENT', color: '#00c48c', label: 'Strong / High Speed', advice: 'Optimal spot for 4K streaming, heavy downloads, and gaming with minimum latency.' };
+    if (rssi >= -67) return { grade: 'GOOD', color: '#0ea5e9', label: 'Good Stability', advice: 'Great for video conferencing, streaming, and daily high-bandwidth tasks.' };
+    if (rssi >= -75) return { grade: 'FAIR', color: '#f59e0b', label: 'Moderate Signal', advice: 'Single wall obstruction. Web browsing works fine, but packet jitter may occur.' };
+    if (rssi >= -82) return { grade: 'WEAK', color: '#f97316', label: 'Heavy Attenuation', advice: 'Signal filtered by concrete/appliances. Consider switching to 2.4 GHz for better wall penetration.' };
+    return { grade: 'DEAD ZONE', color: '#ef4444', label: 'Wi-Fi Dead Zone', advice: 'Signal severely dropped. Wi-Fi extender or moving router closer required.' };
+  }
+
+  render() {
+    const ctx = this.ctx;
+    const w = this.width;
+    const h = this.height;
+    if (!ctx || !w || !h) return;
+
+    ctx.setTransform(this.dpr, 0, 0, this.dpr, 0, 0);
+    ctx.clearRect(0, 0, w, h);
+
+    // 1. Draw Blueprint Floor Background
+    ctx.fillStyle = '#0f172a';
+    ctx.fillRect(0, 0, w, h);
+
+    // Grid lines
+    ctx.strokeStyle = 'rgba(255, 255, 255, 0.05)';
+    ctx.lineWidth = 1;
+    const step = 28;
+    for (let x = 0; x < w; x += step) {
+      ctx.beginPath();
+      ctx.moveTo(x, 0);
+      ctx.lineTo(x, h);
+      ctx.stroke();
+    }
+    for (let y = 0; y < h; y += step) {
+      ctx.beginPath();
+      ctx.moveTo(0, y);
+      ctx.lineTo(w, y);
+      ctx.stroke();
+    }
+
+    // 2. Render Heatmap Radial Diffusion Blobs
+    this.rooms.forEach(r => {
+      const rx = r.x * w;
+      const ry = r.y * h;
+      const radius = r.isRouter ? Math.min(w, h) * 0.44 : Math.min(w, h) * 0.32;
+      const col = this.getSignalColor(r.rssi, 0.28);
+      const colEdge = this.getSignalColor(r.rssi, 0.0);
+
+      const grad = ctx.createRadialGradient(rx, ry, 10, rx, ry, radius);
+      grad.addColorStop(0, col);
+      grad.addColorStop(1, colEdge);
+
+      ctx.fillStyle = grad;
+      ctx.beginPath();
+      ctx.arc(rx, ry, radius, 0, Math.PI * 2);
+      ctx.fill();
+    });
+
+    // 3. Connect rooms to Router with dashed lines
+    const router = this.rooms.find(r => r.isRouter) || this.rooms[0];
+    if (router) {
+      const rX = router.x * w;
+      const rY = router.y * h;
+
+      this.rooms.forEach(r => {
+        if (r === router) return;
+        const rx = r.x * w;
+        const ry = r.y * h;
+
+        ctx.beginPath();
+        ctx.setLineDash([4, 6]);
+        ctx.strokeStyle = this.getSignalColor(r.rssi, 0.35);
+        ctx.lineWidth = 1.6;
+        ctx.moveTo(rX, rY);
+        ctx.lineTo(rx, ry);
+        ctx.stroke();
+        ctx.setLineDash([]);
+      });
+    }
+
+    // 4. Draw Room Nodes & Pins
+    this.rooms.forEach(r => {
+      const rx = r.x * w;
+      const ry = r.y * h;
+      const isSel = (r.id === this.selectedRoomId);
+      const col = this.getSignalColor(r.rssi, 1.0);
+
+      // Pin Glow
+      if (isSel || r.isRouter) {
+        ctx.beginPath();
+        ctx.arc(rx, ry, r.isRouter ? 30 : 24, 0, Math.PI * 2);
+        ctx.fillStyle = isSel ? 'rgba(91, 77, 240, 0.3)' : this.getSignalColor(r.rssi, 0.25);
+        ctx.fill();
+      }
+
+      // Pin Disc
+      ctx.beginPath();
+      ctx.arc(rx, ry, r.isRouter ? 22 : 18, 0, Math.PI * 2);
+      ctx.fillStyle = '#1e293b';
+      ctx.fill();
+      ctx.strokeStyle = col;
+      ctx.lineWidth = isSel ? 3 : 2;
+      ctx.stroke();
+
+      // Emoji
+      ctx.font = r.isRouter ? '16px -apple-system, sans-serif' : '13px -apple-system, sans-serif';
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'middle';
+      ctx.fillText(r.emoji || '📍', rx, ry);
+
+      // Room Name & dBm Badge
+      const text = `${r.name} · ${r.rssi} dBm`;
+      ctx.font = '700 10px -apple-system, sans-serif';
+      const tw = ctx.measureText(text).width + 14;
+
+      ctx.fillStyle = 'rgba(15, 23, 42, 0.92)';
+      ctx.strokeStyle = col;
+      ctx.lineWidth = 1;
+      ctx.beginPath();
+      const by = ry + (r.isRouter ? 30 : 25);
+      if (ctx.roundRect) {
+        ctx.roundRect(rx - tw / 2, by - 9, tw, 18, 8);
+      } else {
+        ctx.rect(rx - tw / 2, by - 9, tw, 18);
+      }
+      ctx.fill();
+      ctx.stroke();
+
+      ctx.fillStyle = '#ffffff';
+      ctx.fillText(text, rx, by);
+    });
+
+    ctx.setTransform(1, 0, 0, 1, 0, 0);
+  }
+
+  renderCards() {
+    const list = document.getElementById('heatmapRoomList');
+    if (!list) return;
+
+    list.innerHTML = this.rooms.map(r => {
+      const cat = this.getSignalCategory(r.rssi);
+      const isSel = (r.id === this.selectedRoomId);
+
+      return `
+        <div class="heatmap-room-card ${isSel ? 'active' : ''}" onclick="window.waveiumHeatmap.selectRoom('${r.id}')">
+          <div style="display:flex; justify-content:space-between; align-items:center;">
+            <div style="display:flex; align-items:center; gap:8px;">
+              <span style="font-size:20px;">${r.emoji}</span>
+              <div>
+                <strong style="color:var(--text); font-size:14px;">${r.name}</strong>
+                ${r.isRouter ? '<span class="badge" style="background:var(--primary); color:#fff; font-size:9px; margin-left:4px;">ROUTER</span>' : ''}
+                <div style="font-size:11px; color:var(--text-muted);">${r.lastSampled ? `Sampled: ${r.lastSampled}` : 'Default Template'}</div>
+              </div>
+            </div>
+            <div style="text-align:right;">
+              <span class="badge" style="background:${cat.color}22; color:${cat.color}; font-weight:800; font-size:12px;">${r.rssi} dBm</span>
+              <div style="font-size:10px; font-weight:700; color:${cat.color}; margin-top:3px;">${cat.grade}</div>
+            </div>
+          </div>
+          <div style="font-size:12px; color:var(--text-muted); margin-top:8px; line-height:1.4;">
+            💡 ${cat.advice}
+          </div>
+        </div>
+      `;
+    }).join('');
+  }
+
+  selectRoom(id) {
+    this.selectedRoomId = id;
+    const sel = document.getElementById('heatmapRoomSelect');
+    if (sel) sel.value = id;
+    this.render();
+    this.renderCards();
+  }
+}
+
+window.WaveiumHeatmap = WaveiumHeatmap;
+
+</script>
+  <script>
+// ==================== speedtest.js ====================
+/**
+ * WAVEIUM - Speed Test & LAN Throughput Benchmark
+ * Measures Ping, Jitter, Download Throughput, and Upload Speeds with a live gauge.
+ */
+
+class WaveiumSpeedTest {
+  constructor(canvasElement) {
+    this.canvas = canvasElement;
+    this.ctx = canvasElement.getContext('2d');
+    this.isRunning = false;
+    this.currentSpeed = 0;
+    this.targetSpeed = 0;
+    this.phase = 'idle'; // 'idle' | 'ping' | 'download' | 'upload' | 'complete'
+
+    this.results = {
+      ping: null,
+      jitter: null,
+      download: null,
+      upload: null
+    };
+
+    this.dpr = window.devicePixelRatio || 1;
+    this.width = 360;
+    this.height = 240;
+
+    this.setupResize();
+    this.startLoop();
+  }
+
+  setupResize() {
+    const resize = () => {
+      const parent = this.canvas.parentElement;
+      if (!parent) return;
+      const w = Math.min(parent.clientWidth || 360, 420);
+      const h = Math.round(w * 0.72);
+
+      this.dpr = window.devicePixelRatio || 1;
+      this.canvas.width = Math.round(w * this.dpr);
+      this.canvas.height = Math.round(h * this.dpr);
+      this.canvas.style.width = `${w}px`;
+      this.canvas.style.height = `${h}px`;
+
+      this.width = w;
+      this.height = h;
+    };
+
+    window.addEventListener('resize', resize);
+    setTimeout(resize, 20);
+  }
+
+  startLoop() {
+    const tick = () => {
+      // Smooth needle animation towards target speed
+      const diff = this.targetSpeed - this.currentSpeed;
+      this.currentSpeed += diff * 0.15;
+      this.render();
+      requestAnimationFrame(tick);
+    };
+    requestAnimationFrame(tick);
+  }
+
+  async runFullTest() {
+    if (this.isRunning) return;
+    this.isRunning = true;
+    this.currentSpeed = 0;
+    this.targetSpeed = 0;
+    this.results = { ping: null, jitter: null, download: null, upload: null };
+
+    const btn = document.getElementById('btnStartSpeedTest');
+    if (btn) {
+      btn.disabled = true;
+      btn.innerHTML = '<span>⏳ Testing Network...</span>';
+    }
+
+    try {
+      // ── PHASE 1: PING & JITTER ──
+      this.phase = 'ping';
+      this.updateStatusText('Measuring Latency & Jitter...');
+      const pings = [];
+      for (let i = 0; i < 5; i++) {
+        const t0 = performance.now();
+        await fetch('/api/speedtest/ping', {
+          headers: { 'ngrok-skip-browser-warning': 'true' }
+        });
+        const elapsed = performance.now() - t0;
+        pings.push(elapsed);
+        await new Promise(r => setTimeout(r, 100));
+      }
+
+      const avgPing = Math.round(pings.reduce((a, b) => a + b, 0) / pings.length);
+      let jitter = 0;
+      for (let i = 1; i < pings.length; i++) {
+        jitter += Math.abs(pings[i] - pings[i - 1]);
+      }
+      jitter = Math.round(jitter / (pings.length - 1));
+
+      this.results.ping = avgPing;
+      this.results.jitter = jitter;
+      this.updateMetricCard('stPing', `${avgPing} ms`);
+      this.updateMetricCard('stJitter', `${jitter} ms`);
+
+      // ── PHASE 2: DOWNLOAD SPEED ──
+      this.phase = 'download';
+      this.updateStatusText('Testing Download Throughput...');
+      const dlRes = await fetch('/api/speedtest/download?size_mb=10', {
+        headers: { 'ngrok-skip-browser-warning': 'true' }
+      });
+
+      const reader = dlRes.body.getReader();
+      let receivedBytes = 0;
+      const startTime = performance.now();
+      let lastReport = startTime;
+
+      while (true) {
+        const { done, value } = await reader.read();
+        if (done) break;
+        receivedBytes += value.length;
+
+        const now = performance.now();
+        if (now - lastReport > 80) {
+          const sec = (now - startTime) / 1000;
+          const currentMbps = (receivedBytes * 8) / (sec * 1_000_000);
+          this.targetSpeed = currentMbps;
+          lastReport = now;
+        }
+      }
+
+      const totalDlSec = (performance.now() - startTime) / 1000;
+      const finalDlMbps = Math.round(((receivedBytes * 8) / (totalDlSec * 1_000_000)) * 10) / 10;
+      this.results.download = finalDlMbps;
+      this.targetSpeed = finalDlMbps;
+      this.updateMetricCard('stDownload', `${finalDlMbps} Mbps`);
+
+      await new Promise(r => setTimeout(r, 400));
+
+      // ── PHASE 3: UPLOAD SPEED ──
+      this.phase = 'upload';
+      this.updateStatusText('Testing Upload Throughput...');
+      this.targetSpeed = 0;
+
+      // 4MB synthetic payload
+      const uploadBytes = 4 * 1024 * 1024;
+      const dummyPayload = new Uint8Array(uploadBytes);
+      const upStart = performance.now();
+
+      const upRes = await fetch('/api/speedtest/upload', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/octet-stream',
+          'ngrok-skip-browser-warning': 'true'
+        },
+        body: dummyPayload
+      });
+
+      const upData = await upRes.json();
+      const totalUpSec = (performance.now() - upStart) / 1000;
+      const finalUpMbps = Math.round(((uploadBytes * 8) / (totalUpSec * 1_000_000)) * 10) / 10;
+
+      this.results.upload = finalUpMbps;
+      this.targetSpeed = finalUpMbps;
+      this.updateMetricCard('stUpload', `${finalUpMbps} Mbps`);
+
+      // ── COMPLETE ──
+      this.phase = 'complete';
+      this.updateStatusText('✓ Test Complete');
+      this.calculateGrade();
+
+    } catch (err) {
+      console.warn('Speed test error:', err);
+      this.updateStatusText('Test Interrupted');
+    } finally {
+      this.isRunning = false;
+      if (btn) {
+        btn.disabled = false;
+        btn.innerHTML = '<span>▶ Restart Speed Test</span>';
+      }
+    }
+  }
+
+  updateStatusText(txt) {
+    const el = document.getElementById('speedTestPhaseText');
+    if (el) el.textContent = txt;
+  }
+
+  updateMetricCard(id, val) {
+    const el = document.getElementById(id);
+    if (el) el.textContent = val;
+  }
+
+  calculateGrade() {
+    const gradeEl = document.getElementById('stGrade');
+    const descEl = document.getElementById('stGradeDesc');
+    const dl = this.results.download || 0;
+    const ping = this.results.ping || 0;
+
+    let grade = 'A+';
+    let color = '#00c48c';
+    let desc = 'Exceptional connection. Ideal for 4K/8K HDR streaming, cloud gaming, and simultaneous video calls.';
+
+    if (dl < 20 || ping > 80) {
+      grade = 'C';
+      color = '#ef4444';
+      desc = 'High latency or heavy Wi-Fi congestion. Move closer to the router or switch channels.';
+    } else if (dl < 80 || ping > 45) {
+      grade = 'B';
+      color = '#f59e0b';
+      desc = 'Moderate performance. Handles HD video and web browsing well, but may experience occasional lag.';
+    } else if (dl < 250 || ping > 25) {
+      grade = 'A';
+      color = '#0ea5e9';
+      desc = 'High-speed connection. Seamless streaming, swift downloads, and stable conferencing.';
+    }
+
+    if (gradeEl) {
+      gradeEl.textContent = grade;
+      gradeEl.style.color = color;
+    }
+    if (descEl) descEl.textContent = desc;
+  }
+
+  render() {
+    const ctx = this.ctx;
+    const w = this.width;
+    const h = this.height;
+    if (!ctx || !w || !h) return;
+
+    ctx.setTransform(this.dpr, 0, 0, this.dpr, 0, 0);
+    ctx.clearRect(0, 0, w, h);
+
+    const cx = w / 2;
+    const cy = h * 0.85;
+    const r = Math.min(w * 0.44, h * 0.72);
+
+    const startAngle = Math.PI * 0.80;
+    const endAngle = Math.PI * 2.20;
+    const totalAngle = endAngle - startAngle;
+
+    // 1. Dial Track Arc
+    ctx.beginPath();
+    ctx.arc(cx, cy, r, startAngle, endAngle);
+    ctx.lineWidth = 14;
+    ctx.strokeStyle = 'rgba(255, 255, 255, 0.08)';
+    ctx.lineCap = 'round';
+    ctx.stroke();
+
+    // 2. Active Speed Gauge Fill Arc
+    // Scale 0 to 800 Mbps with log-like feel
+    const maxScale = 800;
+    const norm = Math.max(0, Math.min(1, Math.log10(this.currentSpeed + 1) / Math.log10(maxScale + 1)));
+    const currentAngle = startAngle + totalAngle * norm;
+
+    if (norm > 0) {
+      const grad = ctx.createLinearGradient(cx - r, cy, cx + r, cy);
+      grad.addColorStop(0, '#5b4df0');
+      grad.addColorStop(0.5, '#0ea5e9');
+      grad.addColorStop(1, '#00c48c');
+
+      ctx.beginPath();
+      ctx.arc(cx, cy, r, startAngle, currentAngle);
+      ctx.lineWidth = 14;
+      ctx.strokeStyle = grad;
+      ctx.lineCap = 'round';
+      ctx.stroke();
+    }
+
+    // 3. Dial Ticks
+    const ticks = [0, 50, 150, 300, 500, 800];
+    ticks.forEach(tVal => {
+      const tNorm = Math.log10(tVal + 1) / Math.log10(maxScale + 1);
+      const tAng = startAngle + totalAngle * tNorm;
+      const x1 = cx + (r - 18) * Math.cos(tAng);
+      const y1 = cy + (r - 18) * Math.sin(tAng);
+      const x2 = cx + (r - 8) * Math.cos(tAng);
+      const y2 = cy + (r - 8) * Math.sin(tAng);
+
+      ctx.beginPath();
+      ctx.moveTo(x1, y1);
+      ctx.lineTo(x2, y2);
+      ctx.strokeStyle = 'rgba(255, 255, 255, 0.25)';
+      ctx.lineWidth = 1.5;
+      ctx.stroke();
+
+      const tx = cx + (r - 28) * Math.cos(tAng);
+      const ty = cy + (r - 28) * Math.sin(tAng);
+      ctx.font = '600 9px -apple-system, sans-serif';
+      ctx.fillStyle = '#737791';
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'middle';
+      ctx.fillText(tVal, tx, ty);
+    });
+
+    // 4. Glowing Needle
+    const needleR = r - 12;
+    const nx = cx + needleR * Math.cos(currentAngle);
+    const ny = cy + needleR * Math.sin(currentAngle);
+
+    ctx.beginPath();
+    ctx.moveTo(cx, cy);
+    ctx.lineTo(nx, ny);
+    ctx.lineWidth = 3;
+    ctx.strokeStyle = '#00c48c';
+    ctx.shadowColor = '#00c48c';
+    ctx.shadowBlur = 10;
+    ctx.stroke();
+    ctx.shadowBlur = 0;
+
+    // Center pivot disc
+    ctx.beginPath();
+    ctx.arc(cx, cy, 8, 0, Math.PI * 2);
+    ctx.fillStyle = '#ffffff';
+    ctx.fill();
+    ctx.lineWidth = 2.5;
+    ctx.strokeStyle = '#5b4df0';
+    ctx.stroke();
+
+    // 5. Digital Readout
+    ctx.font = '900 32px -apple-system, sans-serif';
+    ctx.fillStyle = '#ffffff';
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    ctx.fillText(Math.round(this.currentSpeed * 10) / 10, cx, cy - 42);
+
+    ctx.font = '700 11px -apple-system, sans-serif';
+    ctx.fillStyle = '#00c48c';
+    ctx.fillText('MBPS', cx, cy - 18);
+
+    ctx.setTransform(1, 0, 0, 1, 0, 0);
+  }
+}
+
+window.WaveiumSpeedTest = WaveiumSpeedTest;
+
+</script>
+  <script>
+// ==================== channels.js ====================
+/**
+ * WAVEIUM - Wi-Fi Channel Spectrum & Neighbor Interference Scanner
+ * Visualizes 2.4 GHz and 5 GHz frequency curves, channel congestion, and recommendations.
+ */
+
+class WaveiumChannelScanner {
+  constructor(canvasElement) {
+    this.canvas = canvasElement;
+    this.ctx = canvasElement.getContext('2d');
+    this.activeBand = '5G'; // '5G' | '2.4G'
+    this.data = null;
+    this.isLoading = false;
+
+    this.dpr = window.devicePixelRatio || 1;
+    this.width = 600;
+    this.height = 260;
+
+    this.setupResize();
+    this.fetchData();
+  }
+
+  setupResize() {
+    const resize = () => {
+      const parent = this.canvas.parentElement;
+      if (!parent) return;
+      const w = parent.clientWidth || 550;
+      const h = 260;
+
+      this.dpr = window.devicePixelRatio || 1;
+      this.canvas.width = Math.round(w * this.dpr);
+      this.canvas.height = Math.round(h * this.dpr);
+      this.canvas.style.width = `${w}px`;
+      this.canvas.style.height = `${h}px`;
+
+      this.width = w;
+      this.height = h;
+      this.render();
+    };
+
+    window.addEventListener('resize', resize);
+    setTimeout(resize, 30);
+  }
+
+  setBand(band) {
+    this.activeBand = band;
+    const btn2g = document.getElementById('btnBand2G');
+    const btn5g = document.getElementById('btnBand5G');
+    if (btn2g && btn5g) {
+      btn2g.classList.toggle('active', band === '2.4G');
+      btn5g.classList.toggle('active', band === '5G');
+    }
+    this.render();
+    this.renderTable();
+  }
+
+  async fetchData() {
+    this.isLoading = true;
+    const btn = document.getElementById('btnRefreshChannels');
+    if (btn) btn.classList.add('spinning');
+
+    try {
+      const res = await fetch('/api/channels', {
+        headers: { 'ngrok-skip-browser-warning': 'true' }
+      });
+      if (res.ok) {
+        this.data = await res.json();
+        // Auto-select active band based on router
+        if (this.data.current_band && this.data.current_band.includes('2.4')) {
+          this.activeBand = '2.4G';
+        } else {
+          this.activeBand = '5G';
+        }
+        this.updateUI();
+      }
+    } catch (err) {
+      console.warn('Channel scan error:', err);
+    } finally {
+      this.isLoading = false;
+      if (btn) btn.classList.remove('spinning');
+    }
+  }
+
+  updateUI() {
+    this.render();
+    this.renderRecommendations();
+    this.renderTable();
+  }
+
+  renderRecommendations() {
+    if (!this.data) return;
+
+    const curChanEl = document.getElementById('chanCurrentVal');
+    const recChanEl = document.getElementById('chanRecommendVal');
+    const recDescEl = document.getElementById('chanRecommendDesc');
+
+    const is5G = this.activeBand === '5G';
+    const curChan = this.data.current_channel || (is5G ? 36 : 6);
+    const bestChan = is5G ? this.data.best_5g_channel : this.data.best_2g_channel;
+
+    if (curChanEl) {
+      curChanEl.textContent = `Channel ${curChan} (${this.data.current_ssid || 'Connected'})`;
+    }
+
+    if (recChanEl) {
+      if (curChan === bestChan) {
+        recChanEl.textContent = `✓ Channel ${curChan} (Optimal)`;
+        recChanEl.style.color = '#00c48c';
+      } else {
+        recChanEl.textContent = `★ Channel ${bestChan}`;
+        recChanEl.style.color = '#5b4df0';
+      }
+    }
+
+    if (recDescEl) {
+      const neighbors = (this.data.networks || []).filter(n => (is5G ? n.channel >= 36 : n.channel <= 14));
+      const curCount = neighbors.filter(n => n.channel === curChan).length;
+
+      if (curChan === bestChan) {
+        recDescEl.textContent = `Your router is already configured on the least congested channel in your neighborhood with minimal competing interference.`;
+      } else {
+        recDescEl.textContent = `Channel ${curChan} is currently shared by ${curCount} network(s). Switching your router's Wi-Fi channel to Channel ${bestChan} will clear RF contention and increase throughput.`;
+      }
+    }
+  }
+
+  renderTable() {
+    const tbody = document.getElementById('channelNetworksTable');
+    if (!tbody || !this.data) return;
+
+    const is5G = this.activeBand === '5G';
+    const nets = (this.data.networks || []).filter(n => is5G ? (n.channel >= 36) : (n.channel <= 14));
+
+    if (nets.length === 0) {
+      tbody.innerHTML = `<tr><td colspan="5" style="text-align:center; padding:20px; color:var(--text-muted);">No neighbor networks detected on ${this.activeBand}. Airwaves are 100% clean!</td></tr>`;
+      return;
+    }
+
+    tbody.innerHTML = nets.map(n => {
+      const isCur = (n.ssid === this.data.current_ssid) || (n.channel === this.data.current_channel);
+      const col = isCur ? '#00c48c' : '#737791';
+
+      return `
+        <tr style="${isCur ? 'background:rgba(0, 196, 140, 0.08); font-weight:700;' : ''}">
+          <td>
+            <strong>${n.ssid}</strong>
+            ${isCur ? '<span class="badge" style="background:#00c48c; color:#fff; font-size:9px; margin-left:6px;">YOUR NETWORK</span>' : ''}
+          </td>
+          <td><span class="badge" style="background:var(--primary-soft); color:var(--primary); font-weight:800;">Ch ${n.channel}</span></td>
+          <td>${n.band}</td>
+          <td><span style="color:${col}; font-weight:700;">${n.signal || 50}%</span> (${n.rssi || -65} dBm)</td>
+          <td style="font-family:monospace; font-size:11px; color:var(--text-muted);">${n.bssid}</td>
+        </tr>
+      `;
+    }).join('');
+  }
+
+  render() {
+    const ctx = this.ctx;
+    const w = this.width;
+    const h = this.height;
+    if (!ctx || !w || !h) return;
+
+    ctx.setTransform(this.dpr, 0, 0, this.dpr, 0, 0);
+    ctx.clearRect(0, 0, w, h);
+
+    // Background
+    ctx.fillStyle = '#0f172a';
+    ctx.fillRect(0, 0, w, h);
+
+    const is5G = this.activeBand === '5G';
+    const channels = is5G
+      ? [36, 40, 44, 48, 52, 56, 60, 64, 100, 104, 108, 149, 153, 157, 161]
+      : [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13];
+
+    const paddingX = 40;
+    const baselineY = h - 35;
+    const chartW = w - paddingX * 2;
+    const chartH = h - 70;
+
+    // Grid baseline
+    ctx.strokeStyle = 'rgba(255, 255, 255, 0.12)';
+    ctx.lineWidth = 1;
+    ctx.beginPath();
+    ctx.moveTo(paddingX - 10, baselineY);
+    ctx.lineTo(w - paddingX + 10, baselineY);
+    ctx.stroke();
+
+    // Map channels to X positions
+    const getXForChannel = (chan) => {
+      const idx = channels.indexOf(chan);
+      if (idx !== -1) {
+        return paddingX + (idx / (channels.length - 1)) * chartW;
+      }
+      // Interpolate if channel is between known ones
+      const first = channels[0];
+      const last = channels[channels.length - 1];
+      const frac = Math.max(0, Math.min(1, (chan - first) / (last - first)));
+      return paddingX + frac * chartW;
+    };
+
+    // Draw Channel Labels on X-axis
+    channels.forEach(ch => {
+      const x = getXForChannel(ch);
+      const isCur = this.data && (ch === this.data.current_channel);
+
+      ctx.fillStyle = isCur ? '#00c48c' : 'rgba(255, 255, 255, 0.45)';
+      ctx.font = isCur ? '800 11px -apple-system, sans-serif' : '600 10px -apple-system, sans-serif';
+      ctx.textAlign = 'center';
+      ctx.fillText(ch, x, baselineY + 16);
+
+      // Subtle tick line
+      ctx.beginPath();
+      ctx.moveTo(x, baselineY);
+      ctx.lineTo(x, baselineY + 5);
+      ctx.strokeStyle = isCur ? '#00c48c' : 'rgba(255, 255, 255, 0.18)';
+      ctx.stroke();
+    });
+
+    // Draw Frequency Bell Curves for each network
+    const networks = (this.data && this.data.networks)
+      ? this.data.networks.filter(n => is5G ? (n.channel >= 36) : (n.channel <= 14))
+      : [];
+
+    const curveWidth = is5G ? (chartW / (channels.length - 1)) * 1.8 : (chartW / (channels.length - 1)) * 3.5;
+
+    networks.forEach(net => {
+      const x = getXForChannel(net.channel);
+      const sig = net.signal || 50;
+      const peakH = (sig / 100) * (chartH * 0.85);
+      const isCur = (net.ssid === this.data?.current_ssid) || (net.channel === this.data?.current_channel);
+
+      const color = isCur ? '#00c48c' : 'rgba(91, 77, 240, 0.7)';
+      const fillColor = isCur ? 'rgba(0, 196, 140, 0.25)' : 'rgba(91, 77, 240, 0.12)';
+
+      // Bell curve path
+      ctx.beginPath();
+      ctx.moveTo(x - curveWidth / 2, baselineY);
+      ctx.bezierCurveTo(
+        x - curveWidth / 4, baselineY,
+        x - curveWidth / 4, baselineY - peakH,
+        x, baselineY - peakH
+      );
+      ctx.bezierCurveTo(
+        x + curveWidth / 4, baselineY - peakH,
+        x + curveWidth / 4, baselineY,
+        x + curveWidth / 2, baselineY
+      );
+
+      ctx.fillStyle = fillColor;
+      ctx.fill();
+      ctx.lineWidth = isCur ? 2.8 : 1.4;
+      ctx.strokeStyle = color;
+      ctx.stroke();
+
+      // Peak Label
+      ctx.fillStyle = isCur ? '#ffffff' : '#94a3b8';
+      ctx.font = isCur ? '800 10px -apple-system, sans-serif' : '600 9px -apple-system, sans-serif';
+      ctx.textAlign = 'center';
+      const label = net.ssid.length > 12 ? net.ssid.slice(0, 10) + '…' : net.ssid;
+      ctx.fillText(label, x, baselineY - peakH - 8);
+
+      if (isCur) {
+        ctx.fillStyle = '#00c48c';
+        ctx.font = '800 8.5px -apple-system, sans-serif';
+        ctx.fillText('★ YOUR ROUTER', x, baselineY - peakH - 20);
+      }
+    });
+
+    ctx.setTransform(1, 0, 0, 1, 0, 0);
+  }
+}
+
+window.WaveiumChannelScanner = WaveiumChannelScanner;
+
+</script>
+  <script>
+// ==================== app.js ====================
+/**
+ * WAVEIUM - Main Web & Mobile Application Controller
+ * Handles live polling, cross-platform tab switching, device tables,
+ * mobile signal advisor, drawer interactions, and PWA installation.
+ */
+
+class WaveiumApp {
+  constructor() {
+    this.currentTab = 'topology';
+    this.networkData = null;
+    this.selectedDevice = null;
+    this.radar = null;
+    this.deferredInstallPrompt = null;
+
+    this.init();
+  }
+
+  init() {
+    this.initRadar();
+    this.initNavigation();
+    this.initActions();
+    this.initCanvasControls();
+    this.initAdvisorSwitcher();
+    this.bindRefreshControls();
+    this.initPWA();
+    if (window.WaveiumCellularAdvisor) {
+      window.cellularAdvisor = new WaveiumCellularAdvisor();
+    }
+    if (window.WaveiumHeatmap) {
+      const heatCanvas = document.getElementById('heatmapCanvas');
+      if (heatCanvas) {
+        window.waveiumHeatmap = new WaveiumHeatmap(heatCanvas);
+      }
+    }
+    if (window.WaveiumSpeedTest) {
+      const speedCanvas = document.getElementById('speedometerCanvas');
+      if (speedCanvas) {
+        window.waveiumSpeedTest = new WaveiumSpeedTest(speedCanvas);
+      }
+    }
+    if (window.WaveiumChannelScanner) {
+      const chanCanvas = document.getElementById('channelSpectrumCanvas');
+      if (chanCanvas) {
+        window.waveiumChannelScanner = new WaveiumChannelScanner(chanCanvas);
+      }
+    }
+    this.bindNewFeatureControls();
+    this.startPolling();
+  }
+
+  initRadar() {
+    const canvas = document.getElementById('radarCanvas');
+    if (!canvas) return;
+
+    this.radar = new WaveiumRadar(canvas, (node) => {
+      this.handleNodeSelected(node);
+    });
+  }
+
+  initNavigation() {
+    // Desktop Nav Items
+    const desktopNavs = document.querySelectorAll('.app-sidebar .nav-item');
+    desktopNavs.forEach(item => {
+      item.addEventListener('click', () => {
+        const tab = item.getAttribute('data-tab');
+        this.switchTab(tab);
+      });
+    });
+
+    // Mobile Bottom Nav Items
+    const mobileNavs = document.querySelectorAll('.mobile-nav-item');
+    mobileNavs.forEach(item => {
+      item.addEventListener('click', () => {
+        const tab = item.getAttribute('data-tab');
+        this.switchTab(tab);
+      });
+    });
+
+    // Hash direct linking
+    if (window.location.hash === '#tower-close') {
+      this.switchTab('topology');
+      setTimeout(() => {
+        document.getElementById('btnModeCellular')?.click();
+        const slider = document.getElementById('cellSimSlider');
+        if (slider) {
+          slider.value = -72;
+          slider.dispatchEvent(new Event('input'));
+        }
+      }, 200);
+    } else if (window.location.hash === '#tower' || window.location.hash === '#cellular-tower') {
+      this.switchTab('topology');
+      setTimeout(() => {
+        document.getElementById('btnModeCellular')?.click();
+      }, 150);
+    } else if (window.location.hash === '#adv-cellular') {
+      this.switchTab('advisor');
+      setTimeout(() => {
+        document.getElementById('btnAdvTabCellular')?.click();
+      }, 150);
+    } else if (window.location.hash === '#adv-wifi') {
+      this.switchTab('advisor');
+      setTimeout(() => {
+        document.getElementById('btnAdvTabWifi')?.click();
+      }, 150);
+    } else if (window.location.hash === '#collapsed') {
+      this.switchTab('topology');
+      setTimeout(() => {
+        document.getElementById('btnCollapseDrawer')?.click();
+      }, 150);
+    } else if (window.location.hash) {
+      const hashTab = window.location.hash.replace('#', '');
+      this.switchTab(hashTab);
+    }
+  }
+
+  switchTab(tabId) {
+    if (!tabId) return;
+    this.currentTab = tabId;
+
+    // Update Desktop Nav
+    document.querySelectorAll('.app-sidebar .nav-item').forEach(el => {
+      el.classList.toggle('active', el.getAttribute('data-tab') === tabId);
+    });
+
+    // Update Mobile Nav
+    document.querySelectorAll('.mobile-nav-item').forEach(el => {
+      el.classList.toggle('active', el.getAttribute('data-tab') === tabId);
+    });
+
+    // Switch Tab Panes
+    document.querySelectorAll('.tab-pane').forEach(el => {
+      el.classList.toggle('active', el.id === `tab-${tabId}`);
+    });
+
+    // If switching to topology, trigger radar resize
+    if (tabId === 'topology' && this.radar) {
+      setTimeout(() => this.radar.recalculatePositions(), 50);
+    }
+    // If switching to cellular, trigger chart setup
+    if (tabId === 'cellular' && window.cellularAdvisor) {
+      setTimeout(() => window.cellularAdvisor.setupCanvas(), 50);
+    }
+    // If switching to heatmap, trigger render
+    if (tabId === 'heatmap' && window.waveiumHeatmap) {
+      setTimeout(() => window.waveiumHeatmap.render(), 50);
+    }
+    // If switching to speedtest, trigger render
+    if (tabId === 'speedtest' && window.waveiumSpeedTest) {
+      setTimeout(() => window.waveiumSpeedTest.render(), 50);
+    }
+    // If switching to channels, trigger fetch and render
+    if (tabId === 'channels' && window.waveiumChannelScanner) {
+      setTimeout(() => {
+        window.waveiumChannelScanner.fetchData();
+        window.waveiumChannelScanner.render();
+      }, 50);
+    }
+  }
+
+  bindNewFeatureControls() {
+    // ── 1. HEATMAP CONTROLS ──
+    const btnSample = document.getElementById('btnSampleRoom');
+    if (btnSample) {
+      btnSample.addEventListener('click', () => {
+        if (window.waveiumHeatmap) {
+          const liveWifi = this.networkData?.wifi || {};
+          const sampled = window.waveiumHeatmap.sampleCurrentRoom(liveWifi);
+          this.showToast(`📍 Sampled ${sampled.name}: ${sampled.rssi} dBm`);
+        }
+      });
+    }
+
+    const btnResetHeat = document.getElementById('btnResetHeatmap');
+    if (btnResetHeat) {
+      btnResetHeat.addEventListener('click', () => {
+        if (window.waveiumHeatmap && confirm('Reset all rooms to default layout?')) {
+          window.waveiumHeatmap.resetDefaults();
+          this.showToast('↺ Heatmap reset to defaults');
+        }
+      });
+    }
+
+    const roomSel = document.getElementById('heatmapRoomSelect');
+    if (roomSel) {
+      roomSel.addEventListener('change', (e) => {
+        if (window.waveiumHeatmap) {
+          window.waveiumHeatmap.selectRoom(e.target.value);
+        }
+      });
+    }
+
+    // ── 2. SPEED TEST CONTROLS ──
+    const btnSpeed = document.getElementById('btnStartSpeedTest');
+    if (btnSpeed) {
+      btnSpeed.addEventListener('click', () => {
+        if (window.waveiumSpeedTest) {
+          window.waveiumSpeedTest.runFullTest();
+        }
+      });
+    }
+
+    // ── 3. CHANNEL SCANNER CONTROLS ──
+    const btn2G = document.getElementById('btnBand2G');
+    const btn5G = document.getElementById('btnBand5G');
+    if (btn2G && btn5G) {
+      btn2G.addEventListener('click', () => window.waveiumChannelScanner?.setBand('2.4G'));
+      btn5G.addEventListener('click', () => window.waveiumChannelScanner?.setBand('5G'));
+    }
+
+    const btnRefChan = document.getElementById('btnRefreshChannels');
+    if (btnRefChan) {
+      btnRefChan.addEventListener('click', async () => {
+        if (window.waveiumChannelScanner) {
+          await window.waveiumChannelScanner.fetchData();
+          this.showToast('🔄 Wi-Fi spectrum rescan complete!');
+        }
+      });
+    }
+  }
+
+  initActions() {
+    // Scan Buttons
+    const scanBtns = document.querySelectorAll('.btn-scan');
+    scanBtns.forEach(btn => {
+      btn.addEventListener('click', () => this.triggerRefresh());
+    });
+  }
+
+  bindRefreshControls() {
+    const refreshBtns = [
+      document.getElementById('btnMobileRefresh'),
+      document.getElementById('btnAdvisorRefresh')
+    ].filter(Boolean);
+
+    refreshBtns.forEach(btn => {
+      btn.addEventListener('click', () => this.triggerRefresh());
+    });
+  }
+
+  async triggerRefresh() {
+    const spinners = document.querySelectorAll('.refresh-spinner-icon, .adv-spin-icon');
+    spinners.forEach(s => s.classList.add('spinning'));
+
+    if (navigator.vibrate) {
+      try { navigator.vibrate(35); } catch (_) {}
+    }
+
+    try {
+      await Promise.all([
+        this.fetchNetworkData(),
+        window.cellularAdvisor ? window.cellularAdvisor.probeLatency() : Promise.resolve(),
+        fetch('/api/scan', {
+          method: 'POST',
+          headers: { 'ngrok-skip-browser-warning': 'true' }
+        }).catch(() => {})
+      ]);
+    } catch (e) {
+      console.warn('Refresh error:', e);
+    } finally {
+      setTimeout(() => {
+        this.fetchNetworkData();
+        spinners.forEach(s => s.classList.remove('spinning'));
+        this.showToast('✓ Live Signal & Network Topology Refreshed!');
+      }, 700);
+    }
+  }
+
+  showToast(msg) {
+    let toast = document.getElementById('waveiumToast');
+    if (!toast) {
+      toast = document.createElement('div');
+      toast.id = 'waveiumToast';
+      toast.className = 'waveium-toast';
+      document.body.appendChild(toast);
+    }
+    toast.innerHTML = `<span>🔄</span> <span>${msg}</span>`;
+    toast.classList.add('show');
+    clearTimeout(this._toastTimer);
+    this._toastTimer = setTimeout(() => {
+      toast.classList.remove('show');
+    }, 2800);
+  }
+
+  initCanvasControls() {
+    const btnWifi = document.getElementById('btnModeWifi');
+    const btnCell = document.getElementById('btnModeCellular');
+    const btnFocus = document.getElementById('btnToggleFocus');
+    const focusLabel = document.getElementById('focusLabel');
+    const cellGuideBar = document.getElementById('cellMoveGuideBar');
+    const cellSlider = document.getElementById('cellSimSlider');
+    const cellGuideVal = document.getElementById('cellGuideVal');
+
+    if (btnWifi && btnCell) {
+      btnWifi.addEventListener('click', () => {
+        btnWifi.classList.add('active');
+        btnCell.classList.remove('active');
+        if (cellGuideBar) cellGuideBar.style.display = 'none';
+        if (btnFocus) btnFocus.style.display = 'inline-flex';
+        if (this.radar) {
+          this.radar.setMode('wifi');
+        }
+        if (this.networkData) {
+          const router = this.networkData.nodes?.find(n => n.role === 'router') || { label: 'Main Wi-Fi Gateway', role: 'router' };
+          this.renderDrawerDetails(router);
+        }
+      });
+
+      btnCell.addEventListener('click', () => {
+        btnCell.classList.add('active');
+        btnWifi.classList.remove('active');
+        if (cellGuideBar) cellGuideBar.style.display = 'flex';
+        if (btnFocus) btnFocus.style.display = 'none';
+        if (this.radar) {
+          this.radar.setMode('cellular');
+        }
+        this.renderDrawerCellularTower();
+      });
+    }
+
+    if (btnFocus) {
+      if (this.radar) {
+        const isSimp = this.radar.simplifiedMobileView;
+        btnFocus.classList.toggle('active', isSimp);
+        if (focusLabel) {
+          focusLabel.textContent = isSimp ? 'Focus: Router & Device' : 'All Network Devices';
+        }
+      }
+
+      btnFocus.addEventListener('click', () => {
+        if (!this.radar) return;
+        const isSimplified = this.radar.toggleSimplifiedMobileView();
+        btnFocus.classList.toggle('active', isSimplified);
+        if (focusLabel) {
+          focusLabel.textContent = isSimplified ? 'Focus: Router & Device' : 'All Network Devices';
+        }
+      });
+    }
+
+    if (cellSlider) {
+      cellSlider.addEventListener('input', (e) => {
+        const val = parseInt(e.target.value, 10);
+        if (window.cellularAdvisor) {
+          window.cellularAdvisor.currentData.rsrp = val;
+          window.cellularAdvisor.calculateSignalEstimate();
+          window.cellularAdvisor.renderUI();
+          const g = window.cellularAdvisor.currentData.coverageGuidance;
+          if (cellGuideVal && g) {
+            cellGuideVal.textContent = g.distanceMeters === 0 ? '✓ 0m (In Core Beam)' : `${val} dBm · Move ~${g.distanceMeters}m closer`;
+          }
+        }
+        if (this.radar) {
+          this.radar.setSimulatedRsrp(val);
+        }
+      });
+    }
+
+    // Details Drawer Collapse & Expand Handlers
+    const btnCollapse = document.getElementById('btnCollapseDrawer');
+    const btnExpand = document.getElementById('btnExpandDrawer');
+    const drawer = document.getElementById('detailsDrawer');
+
+    if (btnCollapse && btnExpand && drawer) {
+      const toggleDrawer = (collapse) => {
+        drawer.classList.toggle('collapsed', collapse);
+        btnExpand.style.display = collapse ? 'inline-flex' : 'none';
+        if (this.radar) {
+          setTimeout(() => {
+            this.radar.resize();
+            this.radar.recalculatePositions();
+            this.radar.render();
+          }, 60);
+        }
+      };
+
+      btnCollapse.addEventListener('click', () => toggleDrawer(true));
+      btnExpand.addEventListener('click', () => toggleDrawer(false));
+    }
+  }
+
+  initAdvisorSwitcher() {
+    const btnWifi = document.getElementById('btnAdvTabWifi');
+    const btnCell = document.getElementById('btnAdvTabCellular');
+    const secWifi = document.getElementById('advWifiSection');
+    const secCell = document.getElementById('advCellularSection');
+
+    if (btnWifi && btnCell && secWifi && secCell) {
+      btnWifi.addEventListener('click', () => {
+        btnWifi.classList.add('active');
+        btnCell.classList.remove('active');
+        secWifi.style.display = 'flex';
+        secCell.style.display = 'none';
+      });
+
+      btnCell.addEventListener('click', () => {
+        btnCell.classList.add('active');
+        btnWifi.classList.remove('active');
+        secWifi.style.display = 'none';
+        secCell.style.display = 'flex';
+        if (window.cellularAdvisor) {
+          window.cellularAdvisor.renderUI();
+        }
+      });
+    }
+  }
+
+  initPWA() {
+    // Register Service Worker
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', () => {
+        navigator.serviceWorker.register('/sw.js').catch(err => {
+          console.warn('ServiceWorker registration failed:', err);
+        });
+      });
+    }
+
+    // Capture install prompt
+    window.addEventListener('beforeinstallprompt', (e) => {
+      e.preventDefault();
+      this.deferredInstallPrompt = e;
+      const installBtn = document.getElementById('btnInstallPWA');
+      if (installBtn) {
+        installBtn.style.display = 'inline-flex';
+        installBtn.addEventListener('click', async () => {
+          if (!this.deferredInstallPrompt) return;
+          this.deferredInstallPrompt.prompt();
+          const { outcome } = await this.deferredInstallPrompt.userChoice;
+          if (outcome === 'accepted') {
+            installBtn.style.display = 'none';
+          }
+          this.deferredInstallPrompt = null;
+        });
+      }
+    });
+  }
+
+  startPolling() {
+    this.fetchNetworkData();
+    setInterval(() => this.fetchNetworkData(), 2000);
+  }
+
+  async fetchNetworkData() {
+    try {
+      const res = await fetch('/api/network', {
+        headers: { 'ngrok-skip-browser-warning': 'true' }
+      });
+      if (!res.ok) return;
+      const data = await res.json();
+      this.networkData = data;
+      this.updateUI(data);
+    } catch (err) {
+      console.warn('Polling error:', err);
+    }
+  }
+
+  async triggerScan() {
+    const scanBtns = document.querySelectorAll('.btn-scan');
+    scanBtns.forEach(b => {
+      b.disabled = true;
+      b.innerText = '⏳ Scanning...';
+    });
+
+    try {
+      await fetch('/api/scan', {
+        method: 'POST',
+        headers: { 'ngrok-skip-browser-warning': 'true' }
+      });
+    } catch (err) {
+      console.error(err);
+    } finally {
+      setTimeout(() => {
+        scanBtns.forEach(b => {
+          b.disabled = false;
+          b.innerText = '🔍 Rescan Network';
+        });
+        this.fetchNetworkData();
+      }, 3500);
+    }
+  }
+
+  updateUI(data) {
+    const wifi = data.wifi || {};
+    const devices = data.devices || [];
+    const coverage = data.coverage || {};
+
+    // 1. Header Badges
+    const badgeSsid = document.getElementById('hdrSsid');
+    if (badgeSsid) badgeSsid.textContent = wifi.ssid || 'Wi-Fi';
+
+    const badgeRssi = document.getElementById('hdrRssi');
+    if (badgeRssi) badgeRssi.textContent = wifi.rssi ? `${wifi.rssi} dBm` : '- dBm';
+
+    const badgeRate = document.getElementById('hdrRate');
+    if (badgeRate) badgeRate.textContent = wifi.receive_rate ? `${wifi.receive_rate} Mbps` : 'Direct';
+
+    const badgeDist = document.getElementById('hdrDist');
+    if (badgeDist) badgeDist.textContent = wifi.distance ? `~${wifi.distance}m` : 'Local';
+
+    // 2. Sidebar Summary
+    const sumTotal = document.getElementById('sumTotalDevices');
+    if (sumTotal) sumTotal.textContent = devices.length;
+
+    const sumGateway = document.getElementById('sumGateway');
+    if (sumGateway) sumGateway.textContent = data.gateway || '192.168.1.1';
+
+    const sumLocal = document.getElementById('sumLocalIp');
+    if (sumLocal) sumLocal.textContent = data.local_ip || data.host_ip || '127.0.0.1';
+
+    const sumCoverage = document.getElementById('sumCoverage');
+    if (sumCoverage) sumCoverage.textContent = `~${coverage.max_range_meters || 30}m`;
+
+    // 3. Update Radar
+    if (this.radar) {
+      this.radar.setData(data);
+    }
+
+    // 4. Update Tables & Signal Advisor
+    this.updateLiveScanTable(devices, data.local_ip);
+    this.updateDevicesGrid(devices, data.local_ip);
+    this.updateSignalAdvisor(wifi, coverage);
+
+    // 5. Update Drawer if node is selected or cellular mode active
+    if (this.selectedDevice) {
+      if (this.selectedDevice.id === 'tower') {
+        this.renderDrawerCellularTower();
+      } else if (this.selectedDevice.id === 'this_device') {
+        this.renderDrawerCellularPhone();
+      } else {
+        this.renderDrawerDetails(this.selectedDevice);
+      }
+    } else if (this.radar && this.radar.mode === 'cellular') {
+      this.renderDrawerCellularTower();
+    } else {
+      // Default to router or local device
+      const router = data.nodes ? data.nodes.find(n => n.role === 'router') : null;
+      if (router) this.renderDrawerDetails(router);
+    }
+  }
+
+  handleNodeSelected(node) {
+    this.selectedDevice = node;
+    if (node) {
+      if (node.id === 'tower') {
+        this.renderDrawerCellularTower();
+      } else if (node.id === 'this_device') {
+        this.renderDrawerCellularPhone();
+      } else {
+        this.renderDrawerDetails(node);
+      }
+      // On mobile devices, smoothly scroll to the details drawer
+      if (window.innerWidth < 992) {
+        const drawer = document.querySelector('.details-drawer');
+        if (drawer) {
+          drawer.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        }
+      }
+    }
+  }
+
+  renderDrawerCellularTower() {
+    const titleEl = document.getElementById('drawerNodeTitle');
+    const contentEl = document.getElementById('drawerNodeContent');
+    if (!titleEl || !contentEl) return;
+
+    titleEl.textContent = 'CELLULAR BASE TOWER (5G/4G)';
+    const rsrp = this.radar?.simulatedRsrp != null ? this.radar.simulatedRsrp : (window.cellularAdvisor?.currentData?.rsrp || -84);
+    const gen = window.cellularAdvisor?.currentData?.generation || '4G LTE';
+
+    contentEl.innerHTML = `
+      <div style="font-size:12px; line-height:1.6;">
+        <div class="summary-row"><span>Carrier Site:</span> <span>Macro Sector eNodeB/gNodeB</span></div>
+        <div class="summary-row"><span>Cellular Generation:</span> <span style="color:var(--primary); font-weight:800;">${gen}</span></div>
+        <div class="summary-row"><span>Live Signal (RSRP):</span> <span style="font-weight:800; color:${rsrp >= -85 ? '#087b55' : (rsrp >= -100 ? '#b45309' : '#b91c1c')}">${rsrp} dBm</span></div>
+        <div class="summary-row"><span>Estimated Base Range:</span> <span>~${rsrp >= -85 ? '300m (Direct Beam)' : (rsrp >= -100 ? '800m (Sector)' : '2.5km (Edge)')}</span></div>
+        <div class="summary-row"><span>Connection Type:</span> <span>Wireless Carrier RF</span></div>
+      </div>
+      <div class="coverage-box" style="margin-top:12px;">
+        <h5>🚶 SIGNAL ADVISOR GUIDANCE</h5>
+        <p style="font-size:11px; color:var(--text); line-height:1.5; margin:0;">
+          ${rsrp >= -85
+            ? '✓ Excellent carrier signal! You are in direct line-of-sight with low packet jitter.'
+            : 'For maximum throughput, move closer to an exterior window or elevate the device to avoid indoor building attenuation (+10 to +15 dBm boost).'
+          }
+        </p>
+      </div>
+    `;
+    this.updateDrawerMiniAdvisorCellular(rsrp, gen);
+  }
+
+  renderDrawerCellularPhone() {
+    const titleEl = document.getElementById('drawerNodeTitle');
+    const contentEl = document.getElementById('drawerNodeContent');
+    if (!titleEl || !contentEl) return;
+
+    titleEl.textContent = 'THIS SMARTPHONE (CELLULAR)';
+    const rsrp = this.radar?.simulatedRsrp != null ? this.radar.simulatedRsrp : (window.cellularAdvisor?.currentData?.rsrp || -84);
+    const gen = window.cellularAdvisor?.currentData?.generation || '4G LTE';
+    const dl = window.cellularAdvisor?.currentData?.downlink || 25.0;
+    const rtt = window.cellularAdvisor?.currentData?.rtt || 35;
+
+    contentEl.innerHTML = `
+      <div style="display:flex; align-items:center; gap:12px; margin-bottom:14px;">
+        <div style="font-size:32px;">📱</div>
+        <div>
+          <div style="font-size:14px; font-weight:800; color:var(--text);">Mobile Handset</div>
+          <div style="font-size:12px; color:var(--text-muted); font-family:monospace;">Cellular Radio (WWAN)</div>
+        </div>
+      </div>
+      <div class="summary-row"><span>Radio Type:</span> <span>${gen}</span></div>
+      <div class="summary-row"><span>RSRP Signal:</span> <span style="font-weight:800; color:${rsrp >= -85 ? '#087b55' : (rsrp >= -100 ? '#b45309' : '#b91c1c')}">${rsrp} dBm</span></div>
+      <div class="summary-row"><span>Downlink Bandwidth:</span> <span>${dl} Mbps</span></div>
+      <div class="summary-row"><span>Latency to Tower:</span> <span>${rtt} ms</span></div>
+      <div class="summary-row"><span>Status:</span> <span style="color:var(--green); font-weight:700;">● Active Carrier Link</span></div>
+      <div class="coverage-box" style="margin-top:12px;">
+        <h5>🚶 PROXIMITY ADVICE</h5>
+        <p style="font-size:11px; color:var(--text); line-height:1.5; margin:0;">
+          ${rsrp >= -85
+            ? '✓ Strong signal zone. Carrier direct path is unobstructed.'
+            : 'Move closer towards the perimeter wall or window to climb out of interior attenuation.'}
+        </p>
+      </div>
+    `;
+    this.updateDrawerMiniAdvisorCellular(rsrp, gen);
+  }
+
+  updateDrawerMiniAdvisorCellular(rsrp, gen) {
+    const miniBadge = document.getElementById('miniAdvBadge');
+    const miniOut = document.getElementById('miniAdvOutward');
+    const miniOutSub = document.getElementById('miniAdvOutwardSub');
+    const miniIn = document.getElementById('miniAdvInward');
+    const miniInSub = document.getElementById('miniAdvInwardSub');
+    const miniGuidance = document.getElementById('miniAdvGuidance');
+
+    if (miniBadge) {
+      miniBadge.textContent = `${rsrp} dBm · ${gen || 'Cellular'}`;
+      miniBadge.style.color = rsrp >= -85 ? 'var(--green)' : (rsrp >= -100 ? 'var(--amber)' : 'var(--red)');
+    }
+    const outwardSec = rsrp >= -85 ? 450 : (rsrp >= -100 ? 250 : 80);
+    if (miniOut) miniOut.textContent = `~${outwardSec}m left`;
+    if (miniOutSub) miniOutSub.textContent = 'in primary macro sector';
+
+    const cellG = window.cellularAdvisor?.currentData?.coverageGuidance;
+    if (cellG) {
+      if (miniIn) miniIn.textContent = cellG.distanceMeters === 0 ? '0m (Optimal)' : `~${cellG.distanceMeters}m closer`;
+      if (miniInSub) miniInSub.textContent = cellG.distanceMeters === 0 ? 'In Core beam' : 'towards window';
+      if (miniGuidance) miniGuidance.innerHTML = `🚶 <strong>Cellular Advice:</strong> ${cellG.actionSummary} (${cellG.expectedGain})`;
+    }
+  }
+
+  renderDrawerDetails(node) {
+    const titleEl = document.getElementById('drawerNodeTitle');
+    const contentEl = document.getElementById('drawerNodeContent');
+    if (!titleEl || !contentEl) return;
+
+    const isRouter = node.role === 'router' || node.vertex_type === 'router';
+    const isLocal = node.is_local || node.ip === (this.networkData?.local_ip);
+
+    titleEl.textContent = isRouter ? 'ROUTER (GATEWAY)' : (isLocal ? 'THIS DEVICE' : 'CONNECTED NODE');
+
+    let distHtml = '';
+    if (node.distance != null) {
+      distHtml = `<div class="summary-row"><span>Estimated Distance:</span> <span>${node.distance} meters</span></div>`;
+    }
+    let rssiHtml = '';
+    if (node.rssi != null) {
+      rssiHtml = `<div class="summary-row"><span>Signal Strength:</span> <span>${node.rssi} dBm</span></div>`;
+    }
+
+    let coverageHtml = '';
+    if (isRouter && this.networkData?.coverage) {
+      const cov = this.networkData.coverage;
+      coverageHtml = `
+        <div class="coverage-box">
+          <h5>📡 ROUTER ESTIMATED COVERAGE</h5>
+          <div class="summary-row"><span>Max Reach:</span> <span>~${cov.max_range_meters} meters</span></div>
+          <div class="summary-row"><span>Indoor Range:</span> <span>~${cov.indoor_range_meters} meters</span></div>
+          <div class="summary-row"><span>Confidence:</span> <span>${cov.confidence || 'Good'}</span></div>
+          <div class="summary-row"><span>Propagation:</span> <span>Radial Log-Distance</span></div>
+        </div>
+      `;
+    }
+
+    contentEl.innerHTML = `
+      <div style="display:flex; align-items:center; gap:12px; margin-bottom:14px;">
+        <div style="font-size:32px;">${this.getDeviceEmoji(node)}</div>
+        <div>
+          <div style="font-size:14px; font-weight:800; color:var(--text);">${node.label || node.hostname || 'Device'}</div>
+          <div style="font-size:12px; color:var(--text-muted); font-family:monospace;">${node.ip || 'Unknown IP'}</div>
+        </div>
+      </div>
+      <div class="summary-row"><span>Device Type:</span> <span>${node.type || (isRouter ? 'Gateway Router' : 'Station')}</span></div>
+      <div class="summary-row"><span>Vendor / MAC:</span> <span>${node.vendor || node.mac || 'Standard Adapter'}</span></div>
+      ${rssiHtml}
+      ${distHtml}
+      <div class="summary-row"><span>Status:</span> <span style="color:var(--green); font-weight:700;">● Active Online</span></div>
+      ${coverageHtml}
+    `;
+  }
+
+  updateLiveScanTable(devices, localIp) {
+    const tbody = document.getElementById('liveScanTableBody');
+    if (!tbody) return;
+
+    if (!devices || devices.length === 0) {
+      tbody.innerHTML = `<tr><td colspan="5" style="text-align:center; padding:24px; color:var(--text-muted);">Scanning network for connected devices...</td></tr>`;
+      return;
+    }
+
+    tbody.innerHTML = devices.map(dev => {
+      const isLocal = dev.ip === localIp;
+      const rssi = dev.rssi || (isLocal ? (this.networkData?.wifi?.rssi || -50) : -65);
+      const dist = dev.distance || (isLocal ? (this.networkData?.wifi?.distance || 1.8) : 8.5);
+
+      return `
+        <tr>
+          <td>
+            <div style="display:flex; align-items:center; gap:8px;">
+              <span style="font-size:16px;">${this.getDeviceEmoji(dev)}</span>
+              <div>
+                <strong>${dev.hostname || dev.ip}</strong>
+                ${isLocal ? '<span class="badge badge-live" style="margin-left:6px; font-size:9px; padding:2px 6px;">This Device</span>' : ''}
+              </div>
+            </div>
+          </td>
+          <td style="font-family:monospace;">${dev.ip}</td>
+          <td style="font-family:monospace; color:var(--text-muted);">${dev.mac || '00:00:00:00:00:00'}</td>
+          <td>${dev.vendor || 'Network Adapter'}</td>
+          <td>
+            <span style="font-weight:700; color:${rssi > -60 ? 'var(--green)' : (rssi > -75 ? 'var(--amber)' : 'var(--red)')};">
+              ${rssi} dBm (~${dist}m)
+            </span>
+          </td>
+        </tr>
+      `;
+    }).join('');
+  }
+
+  updateDevicesGrid(devices, localIp) {
+    const container = document.getElementById('devicesCardGrid');
+    if (!container) return;
+
+    if (!devices || devices.length === 0) {
+      container.innerHTML = `<p style="color:var(--text-muted);">No devices discovered yet.</p>`;
+      return;
+    }
+
+    container.innerHTML = devices.map(dev => {
+      const isLocal = dev.ip === localIp;
+      return `
+        <div class="advisor-card" style="cursor:pointer;" onclick="window.waveiumApp.handleNodeSelected({id:'${dev.ip}', ip:'${dev.ip}', label:'${dev.hostname || dev.ip}', mac:'${dev.mac}', vendor:'${dev.vendor}'})">
+          <div style="display:flex; justify-content:space-between; align-items:flex-start;">
+            <span style="font-size:26px;">${this.getDeviceEmoji(dev)}</span>
+            ${isLocal ? '<span class="badge badge-live">This Device</span>' : '<span class="badge">Online</span>'}
+          </div>
+          <div style="margin-top:8px;">
+            <div style="font-size:14px; font-weight:800; color:var(--text);">${dev.hostname || dev.ip}</div>
+            <div style="font-size:12px; color:var(--text-muted); font-family:monospace;">${dev.ip}</div>
+          </div>
+          <div style="font-size:11px; color:var(--text-muted); margin-top:4px;">
+            Vendor: ${dev.vendor || 'Generic Device'}
+          </div>
+        </div>
+      `;
+    }).join('');
+  }
+
+  updateSignalAdvisor(wifi, coverage) {
+    const rssi = wifi.rssi != null ? parseInt(wifi.rssi, 10) : -52;
+    const band = wifi.band || '5 GHz';
+    const rate = wifi.receive_rate || 1201;
+
+    // 1. KPI Values
+    const rssiVal = document.getElementById('advRssi');
+    if (rssiVal) rssiVal.textContent = `${rssi} dBm`;
+
+    const qualBadge = document.getElementById('advQualityBadge');
+    const barFill = document.getElementById('advSignalBarFill');
+
+    // Calculate percentage and bars (-30 dBm = 100%, -90 dBm = 0%)
+    const norm = Math.max(0, Math.min(100, Math.round(((rssi - (-90)) / 60) * 100)));
+    if (barFill) {
+      barFill.style.width = `${norm}%`;
+      barFill.style.background = norm >= 70 ? 'var(--green)' : (norm >= 45 ? 'var(--amber)' : 'var(--red)');
+    }
+
+    let qualityText = 'Excellent Signal (100%)';
+    let qualityColor = 'var(--green)';
+    if (rssi >= -60) {
+      qualityText = `Excellent Signal (${norm}%)`;
+      qualityColor = 'var(--green)';
+    } else if (rssi >= -70) {
+      qualityText = `Good Signal (${norm}%)`;
+      qualityColor = 'var(--green)';
+    } else if (rssi >= -80) {
+      qualityText = `Fair Signal (${norm}%)`;
+      qualityColor = 'var(--amber)';
+    } else {
+      qualityText = `Weak Signal (${norm}%)`;
+      qualityColor = 'var(--red)';
+    }
+    if (qualBadge) {
+      qualBadge.textContent = qualityText;
+      qualBadge.style.color = qualityColor;
+    }
+
+    // 2. Precision Distance & Human Steps calculation
+    // Path loss exponent n = 2.8 for indoor drywall
+    // Reference at 1m: -42 dBm for 5GHz, -38 dBm for 2.4GHz
+    const refA = band.includes('2.4') ? -38 : -42;
+    let computedDist = Math.pow(10, (Math.abs(rssi) - Math.abs(refA)) / (10 * 2.8));
+    computedDist = Math.max(0.8, Math.min(35, Math.round(computedDist * 10) / 10));
+
+    const distVal = document.getElementById('advDist');
+    if (distVal) distVal.textContent = `~${computedDist} m`;
+
+    const stepsVal = document.getElementById('advStepsCount');
+    const steps = Math.max(1, Math.round(computedDist * 1.5));
+    if (stepsVal) stepsVal.textContent = `approx. ${steps} human steps`;
+
+    const rateVal = document.getElementById('advRate');
+    if (rateVal) rateVal.textContent = `${rate} Mbps`;
+
+    const bandEl = document.getElementById('advBandDetails');
+    if (bandEl) bandEl.textContent = `${band} Band · Channel ${wifi.channel || 36} · ${wifi.protocol || '802.11ax'}`;
+
+    const confVal = document.getElementById('advConfidence');
+    if (confVal) {
+      const confScore = Math.max(88, Math.min(99, Math.round(99 - Math.abs(rssi + 50) * 0.25)));
+      confVal.textContent = `${confScore}%`;
+    }
+
+    // 3. DUAL WALKING RANGE ESTIMATION (HOW FAR YOU CAN GO vs HOW CLOSE TO MOVE IN)
+    const maxReach = (coverage && coverage.max_range_meters) ? coverage.max_range_meters : 30;
+    const outwardRemaining = Math.max(0, Math.round((maxReach - computedDist) * 10) / 10);
+    const outwardSteps = Math.max(0, Math.round(outwardRemaining * 1.5));
+    const outwardPct = Math.max(0, Math.min(100, Math.round((outwardRemaining / maxReach) * 100)));
+
+    let inwardNeeded = 0;
+    let inwardTargetText = 'Core Optimal Zone (< 3m)';
+    let inwardBadgeText = 'In Core Direct Line-of-Sight (< 3m)';
+    let inwardSteps = 0;
+    let inwardDetailText = 'Optimal gigabit bandwidth and lowest ping active. Zero physical move required.';
+
+    if (computedDist > 3.0) {
+      inwardNeeded = Math.max(0.5, Math.round((computedDist - 2.5) * 10) / 10);
+      inwardSteps = Math.max(1, Math.round(inwardNeeded * 1.5));
+      inwardTargetText = 'Core Zone (< 3m) for Gigabit speed';
+      inwardBadgeText = `Move ~${inwardNeeded}m closer (${inwardSteps} steps)`;
+      inwardDetailText = `Move approximately ${inwardNeeded}m (${inwardSteps} human steps) towards the router or open intervening doors to reach Core 4K streaming speeds.`;
+    }
+
+    // Populate Full Advisor Tab Outward Card
+    const elOutDist = document.getElementById('advOutwardDist');
+    if (elOutDist) elOutDist.textContent = `~${outwardRemaining} m`;
+
+    const elOutSteps = document.getElementById('advOutwardSteps');
+    if (elOutSteps) elOutSteps.textContent = `approx. ${outwardSteps} steps remaining before disconnect`;
+
+    const elOutProg = document.getElementById('advOutwardProgress');
+    if (elOutProg) elOutProg.style.width = `${outwardPct}%`;
+
+    const elOutDetail = document.getElementById('advOutwardDetail');
+    if (elOutDetail) {
+      if (outwardRemaining > 15) {
+        elOutDetail.textContent = `You have strong range headroom. You can walk up to ~${outwardRemaining}m further before reaching the boundary limit (~${maxReach}m).`;
+      } else if (outwardRemaining > 6) {
+        elOutDetail.textContent = `Approaching fair coverage limit. You have ~${outwardRemaining}m of walkable range remaining before Wi-Fi drops.`;
+      } else {
+        elOutDetail.textContent = `⚠️ Boundary limit: Only ~${outwardRemaining}m left before packet drop-off occurs.`;
+      }
+    }
+
+    // Populate Full Advisor Tab Inward Card
+    const elInDist = document.getElementById('advInwardDist');
+    if (elInDist) elInDist.textContent = inwardNeeded === 0 ? '0.0 m' : `~${inwardNeeded} m`;
+
+    const elInSteps = document.getElementById('advInwardSteps');
+    if (elInSteps) {
+      elInSteps.textContent = inwardNeeded === 0 
+        ? '✓ Optimal position (Already in Core zone)' 
+        : `approx. ${inwardSteps} human steps towards router`;
+    }
+
+    const elInBadge = document.getElementById('advInwardBadge');
+    if (elInBadge) elInBadge.textContent = inwardBadgeText;
+
+    const elInDetail = document.getElementById('advInwardDetail');
+    if (elInDetail) elInDetail.textContent = inwardDetailText;
+
+    // Populate Spectrum Bar
+    const elSpecPos = document.getElementById('advSpectrumPos');
+    const zoneName = computedDist <= 3 ? 'Core Zone' : (computedDist <= 8 ? 'Strong Zone' : (computedDist <= 15 ? 'Good Zone' : (computedDist <= 22 ? 'Fair Zone' : 'Limit Zone')));
+    if (elSpecPos) {
+      elSpecPos.textContent = `Current Position: ${zoneName} (~${computedDist}m from router)`;
+    }
+
+    const elSpecMarker = document.getElementById('spectrumMarker');
+    if (elSpecMarker) {
+      const markerPct = Math.max(3, Math.min(97, Math.round((computedDist / maxReach) * 100)));
+      elSpecMarker.style.left = `${markerPct}%`;
+    }
+
+    // 4. Physical Walking Guidance Banner
+    const actSummary = document.getElementById('wifiAdvActionSummary');
+    const targetZone = document.getElementById('wifiAdvTargetZone');
+    const gainEl = document.getElementById('wifiAdvGain');
+    const adviceDesc = document.getElementById('wifiAdvWalkingAdvice');
+
+    if (rssi >= -62) {
+      if (actSummary) actSummary.textContent = '✓ In Core Optimal Coverage Zone (0m Move Needed)';
+      if (targetZone) targetZone.textContent = 'Router Direct Line-of-Sight (< 3m)';
+      if (gainEl) {
+        gainEl.textContent = 'Optimal Bandwidth (4K/8K Capable)';
+        gainEl.style.color = 'var(--green)';
+      }
+      if (adviceDesc) adviceDesc.textContent = 'You are currently inside the optimal core coverage zone of your Wi-Fi router. Direct line-of-sight is maintained with minimal packet loss and sub-10ms ping.';
+    } else if (rssi >= -74) {
+      const moveMeters = Math.max(1.5, Math.round((computedDist - 2.5) * 10) / 10);
+      const moveSteps = Math.max(2, Math.round(moveMeters * 1.5));
+      if (actSummary) actSummary.textContent = `🚶 Move ~${moveMeters}m (${moveSteps} steps) closer to Router`;
+      if (targetZone) targetZone.textContent = 'Core Zone (-55 dBm)';
+      if (gainEl) {
+        gainEl.textContent = `+${Math.round(-55 - rssi)} dBm boost`;
+        gainEl.style.color = 'var(--primary)';
+      }
+      if (adviceDesc) adviceDesc.textContent = `Move approximately ${moveMeters} meters (${moveSteps} steps) towards the router or open intervening doorways to bypass partition wall attenuation.`;
+    } else {
+      const moveMeters = Math.max(4, Math.round((computedDist - 3) * 10) / 10);
+      const moveSteps = Math.max(6, Math.round(moveMeters * 1.5));
+      if (actSummary) actSummary.textContent = `⚠️ High Attenuation: Move ~${moveMeters}m (${moveSteps} steps) closer`;
+      if (targetZone) targetZone.textContent = 'Primary Sector (< -70 dBm)';
+      if (gainEl) {
+        gainEl.textContent = `+${Math.round(-70 - rssi)} dBm boost`;
+        gainEl.style.color = 'var(--red)';
+      }
+      if (adviceDesc) adviceDesc.textContent = `Signal is heavily attenuated by structural walls or concrete flooring. Move approximately ${moveMeters} meters closer to regain full throughput and stop packet drops.`;
+    }
+
+    // 5. UPDATE SHORT / MINI SIGNAL ADVISOR CARD IN TOPOLOGY RIGHT DRAWER
+    const miniBadge = document.getElementById('miniAdvBadge');
+    if (miniBadge) {
+      miniBadge.textContent = `${rssi} dBm · ${zoneName.replace(' Zone', '')}`;
+      miniBadge.style.color = rssi >= -65 ? 'var(--green)' : (rssi >= -78 ? 'var(--amber)' : 'var(--red)');
+    }
+
+    const miniOut = document.getElementById('miniAdvOutward');
+    if (miniOut) miniOut.textContent = `~${outwardRemaining}m left`;
+
+    const miniOutSub = document.getElementById('miniAdvOutwardSub');
+    if (miniOutSub) miniOutSub.textContent = `approx. ${outwardSteps} steps before drop`;
+
+    const miniIn = document.getElementById('miniAdvInward');
+    if (miniIn) miniIn.textContent = inwardNeeded === 0 ? '0m (Optimal)' : `~${inwardNeeded}m closer`;
+
+    const miniInSub = document.getElementById('miniAdvInwardSub');
+    if (miniInSub) miniInSub.textContent = inwardNeeded === 0 ? 'In Core zone' : `for 4K Ultra-HD tier`;
+
+    const miniGuidance = document.getElementById('miniAdvGuidance');
+    if (miniGuidance) {
+      if (inwardNeeded === 0) {
+        miniGuidance.innerHTML = `🚶 <strong>Walk Advice:</strong> You have <strong>~${outwardRemaining}m</strong> of freedom before Wi-Fi drops. You are already in the optimal core zone.`;
+      } else {
+        miniGuidance.innerHTML = `🚶 <strong>Walk Advice:</strong> Move <strong>~${inwardNeeded}m closer</strong> for peak speeds, or you can walk up to <strong>~${outwardRemaining}m further</strong> before losing connection.`;
+      }
+    }
+
+    // 4. Band steering advice
+    const steerTitle = document.getElementById('wifiBandSteerTitle');
+    const steerDesc = document.getElementById('wifiBandSteerDesc');
+    if (steerTitle && steerDesc) {
+      if (band.includes('5') || band.includes('6')) {
+        steerTitle.textContent = `Band Steering: ${band} Active`;
+        if (computedDist > 10) {
+          steerDesc.textContent = '5 GHz signal attenuates quickly through walls. If you move further, 2.4 GHz will provide greater range and obstacle penetration.';
+        } else {
+          steerDesc.textContent = `${band} provides maximum gigabit throughput with low latency in this room. Keep connected on this band.`;
+        }
+      } else {
+        steerTitle.textContent = 'Band Steering: 2.4 GHz Active';
+        if (computedDist <= 6) {
+          steerDesc.textContent = 'You are close to the router! Switching to your router\'s 5 GHz network will increase speeds up to 4x with zero channel interference.';
+        } else {
+          steerDesc.textContent = '2.4 GHz provides superior penetration through walls and floors at this distance.';
+        }
+      }
+    }
+  }
+
+  getDeviceEmoji(node) {
+    const txt = `${node.label || ''} ${node.hostname || ''} ${node.type || ''} ${node.vendor || ''}`.toLowerCase();
+    if (txt.includes('phone') || txt.includes('iphone') || txt.includes('android')) return '📱';
+    if (txt.includes('laptop') || txt.includes('macbook')) return '💻';
+    if (txt.includes('desktop') || txt.includes('computer')) return '🖥️';
+    if (txt.includes('printer')) return '🖨️';
+    if (txt.includes('tv') || txt.includes('roku') || txt.includes('firetv')) return '📺';
+    if (txt.includes('server') || txt.includes('router') || txt.includes('gateway')) return '🖧';
+    return '📡';
+  }
+}
+
+// Instantiate on DOM load
+window.addEventListener('DOMContentLoaded', () => {
+  window.waveiumApp = new WaveiumApp();
+});
+
+</script>
 
   <script>
     // Fetch and display exact mobile URL in the settings tab
