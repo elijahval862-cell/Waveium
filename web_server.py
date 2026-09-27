@@ -48,7 +48,12 @@ except Exception as e:
     adapter = FallbackAdapter()
     scanner = FallbackScanner()
 
-app = Flask(__name__, static_folder="web")
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+WEB_DIR = os.path.join(BASE_DIR, "web")
+if not os.path.exists(WEB_DIR):
+    WEB_DIR = BASE_DIR
+
+app = Flask(__name__, static_folder=WEB_DIR)
 
 # Shared state
 _state_lock = threading.Lock()
@@ -192,19 +197,36 @@ threading.Thread(target=background_scan_task, daemon=True).start()
 
 @app.route("/")
 def index():
-    return send_from_directory("web", "index.html")
+    if os.path.exists(os.path.join(WEB_DIR, "index.html")):
+        return send_from_directory(WEB_DIR, "index.html")
+    if os.path.exists(os.path.join(BASE_DIR, "index.html")):
+        return send_from_directory(BASE_DIR, "index.html")
+    return "<h1>Waveium is running!</h1>", 200
 
 @app.route("/manifest.json")
 def manifest():
-    return send_from_directory("web", "manifest.json", mimetype="application/manifest+json")
+    for d in [WEB_DIR, BASE_DIR]:
+        if os.path.exists(os.path.join(d, "manifest.json")):
+            return send_from_directory(d, "manifest.json", mimetype="application/manifest+json")
+    return jsonify({}), 404
 
 @app.route("/sw.js")
 def service_worker():
-    return send_from_directory("web", "sw.js", mimetype="application/javascript")
+    for d in [WEB_DIR, BASE_DIR]:
+        if os.path.exists(os.path.join(d, "sw.js")):
+            return send_from_directory(d, "sw.js", mimetype="application/javascript")
+    return "", 404
 
 @app.route("/<path:path>")
 def static_files(path):
-    return send_from_directory("web", path)
+    if os.path.exists(os.path.join(WEB_DIR, path)):
+        return send_from_directory(WEB_DIR, path)
+    if os.path.exists(os.path.join(BASE_DIR, path)):
+        return send_from_directory(BASE_DIR, path)
+    web_sub = os.path.join(BASE_DIR, "web", path)
+    if os.path.exists(web_sub):
+        return send_from_directory(os.path.join(BASE_DIR, "web"), path)
+    return f"File not found: {path}", 404
 
 # ----------------------------------------------------------
 # API ENDPOINTS
